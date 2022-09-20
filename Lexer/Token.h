@@ -38,6 +38,7 @@ namespace CoolCompiler {
         int lineNumber;
 
     public:
+        Token();
         Token(TokenType tokenType, const std::string &lexeme, int contextPosition, int lineNumber);
 
         TokenType getTokenType();

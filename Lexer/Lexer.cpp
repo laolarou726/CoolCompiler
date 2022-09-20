@@ -224,4 +224,8 @@ namespace CoolCompiler {
         Token EOFToken = Token(E0F, "$", 0, lineNumber + 1);
         tokens.emplace_back(EOFToken);
     }
+
+    std::vector<Token> Lexer::getTokens() const {
+        return tokens;
+    }
 } // CoolCompiler

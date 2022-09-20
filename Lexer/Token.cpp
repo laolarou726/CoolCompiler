@@ -51,6 +51,12 @@ namespace CoolCompiler {
             {"true",     TokenType::TRUE}
     };
 
+    Token::Token() {
+        this->tokenType = E0F;
+        this->contextPosition = -1;
+        this->lineNumber = -1;
+    }
+
     Token::Token(TokenType tokenType, const std::string &lexeme, int contextPosition, int lineNumber) {
         this->tokenType = tokenType;
         this->lexeme = lexeme;
