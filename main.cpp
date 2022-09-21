@@ -2,7 +2,7 @@
 #include "Lexer/Lexer.h"
 
 int main() {
-    CoolCompiler::Lexer l = CoolCompiler::Lexer("examples/classes.cl");
+    CoolCompiler::Lexer l = CoolCompiler::Lexer("examples/factorial.cl");
     l.doScan();
 
 

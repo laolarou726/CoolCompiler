@@ -8,6 +8,7 @@
 #include <vector>
 #include "../Lexer/Token.h"
 #include "AST/AST.h"
+#include "AST/Class.h"
 
 namespace CoolCompiler {
 
@@ -16,17 +17,30 @@ namespace CoolCompiler {
         std::vector<Token> tokens;
         int position;
         Token currentToken;
-        AST parseTree;
+        std::vector<AST> parseTree;
 
         void Fail(const std::string &errorMessage);
         Token expect(TokenType tokenType, const std::string &errorMessage = "");
         Token next(int step = 1);
         bool hasNext();
         [[nodiscard]] Token peek(int lookAhead = 1) const;
+
+        // AST Resolver
+
+        void PROGRAM(std::vector<AST> &container);
+        void CLASS(std::vector<AST> &container);
+        void FEATURE_ATTR(std::vector<AST> &container);
+        void FEATURE_METHOD(std::vector<AST> &container);
+        void FEATURE(std::vector<AST> &container);
+        void FORMAL(std::vector<AST> &container);
+        void ASSIGNMENT(std::vector<AST> &container);
+
+
+        // End of AST Resolver
     public:
         explicit Parser(const std::vector<Token> &tokens);
         void parse();
-        [[nodiscard]] AST getParseTree() const;
+        [[nodiscard]] std::vector<AST> getParseTree() const;
     };
 
 } // CoolCompiler

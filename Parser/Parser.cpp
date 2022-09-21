@@ -51,7 +51,7 @@ namespace CoolCompiler {
         return tokens[position + lookAhead];
     }
 
-    AST Parser::getParseTree() const {
+    std::vector<AST> Parser::getParseTree() const {
         return parseTree;
     }
 } // CoolCompiler
