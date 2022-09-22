@@ -10,7 +10,7 @@
 
 namespace CoolCompiler {
 
-    class Assignment : Expression {
+    class Assignment : public Expression {
     private:
         Id id;
         Expression expression;

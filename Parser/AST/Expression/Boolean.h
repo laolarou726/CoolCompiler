@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class Boolean : Expression {
+    class Boolean : public Expression {
     private:
         bool value;
     public:

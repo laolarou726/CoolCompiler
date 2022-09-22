@@ -43,7 +43,7 @@ namespace CoolCompiler {
 
         TokenType getTokenType();
 
-        std::string getLexeme();
+        [[nodiscard]] std::string getLexeme() const;
 
         [[nodiscard]] int getContextPosition() const;
 

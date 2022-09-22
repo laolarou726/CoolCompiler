@@ -10,7 +10,7 @@
 
 namespace CoolCompiler {
 
-    class Block : Expression {
+    class Block : public Expression {
     private:
         std::vector<Expression> expressions;
     public:

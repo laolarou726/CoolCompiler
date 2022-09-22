@@ -7,16 +7,17 @@
 
 #include <vector>
 #include "Expression.h"
+#include "InnerLet.h"
 
 namespace CoolCompiler {
 
-    class Let : Expression {
+    class Let : public Expression {
     private:
-        std::vector<AST> parameters;
+        std::vector<InnerLet> parameters;
         Expression expression;
     public:
-        Let(const std::vector<AST> &parameters, const Expression &expression);
-        [[nodiscard]] std::vector<AST> getParameters() const;
+        Let(const std::vector<InnerLet> &parameters, const Expression &expression);
+        [[nodiscard]] std::vector<InnerLet> getParameters() const;
         [[nodiscard]] Expression getExpression() const;
     };
 

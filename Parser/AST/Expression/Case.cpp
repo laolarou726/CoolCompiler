@@ -5,7 +5,7 @@
 #include "Case.h"
 
 namespace CoolCompiler {
-    Case::Case(const Expression &expression, const std::vector<AST> &actions) : Expression("case") {
+    Case::Case(const Expression &expression, const std::vector<CaseAction> &actions) : Expression("case") {
         this->expression = expression;
         this->actions = actions;
     }
@@ -14,7 +14,7 @@ namespace CoolCompiler {
         return expression;
     }
 
-    std::vector<AST> Case::getActions() const {
+    std::vector<CaseAction> Case::getActions() const {
         return actions;
     }
 } // CoolCompiler

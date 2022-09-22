@@ -5,12 +5,12 @@
 #include "Let.h"
 
 namespace CoolCompiler {
-    Let::Let(const std::vector<AST> &parameters, const Expression &expression) : Expression("let") {
+    Let::Let(const std::vector<InnerLet> &parameters, const Expression &expression) : Expression("let") {
         this->parameters = parameters;
         this->expression = expression;
     }
 
-    std::vector<AST> Let::getParameters() const {
+    std::vector<InnerLet> Let::getParameters() const {
         return parameters;
     }
 

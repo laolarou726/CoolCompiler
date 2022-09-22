@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class New : Expression {
+    class New : public Expression {
     private:
         std::string type;
     public:

@@ -6,17 +6,18 @@
 #define COOLCOMPILER_MATHBINOP_H
 
 #include "Expression.h"
+#include "../../../Lexer/Token.h"
 
 namespace CoolCompiler {
 
-    class MathBinop : Expression {
+    class MathBinop : public Expression {
     private:
-        std::string operation;
+        TokenType operation;
         Expression expressionLeft;
         Expression expressionRight;
     public:
-        MathBinop(const std::string &operation, const Expression &expressionLeft, const Expression &expressionRight);
-        [[nodiscard]] std::string getOperation() const;
+        MathBinop(TokenType operation, const Expression &expressionLeft, const Expression &expressionRight);
+        [[nodiscard]] TokenType getOperation() const;
         [[nodiscard]] Expression getExpressionLeft() const;
         [[nodiscard]] Expression getExpressionRight() const;
     };

@@ -7,17 +7,18 @@
 
 #include <vector>
 #include "Expression.h"
+#include "CaseAction.h"
 
 namespace CoolCompiler {
 
-    class Case : Expression {
+    class Case : public Expression {
     private:
         Expression expression;
-        std::vector<AST> actions;
+        std::vector<CaseAction> actions;
     public:
-        Case(const Expression &expression, const std::vector<AST> &actions);
+        Case(const Expression &expression, const std::vector<CaseAction> &actions);
         [[nodiscard]] Expression getExpression() const;
-        [[nodiscard]] std::vector<AST> getActions() const;
+        [[nodiscard]] std::vector<CaseAction> getActions() const;
     };
 
 } // CoolCompiler

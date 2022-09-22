@@ -12,7 +12,7 @@
 
 namespace CoolCompiler {
 
-    class FeatureMethod : AST {
+    class FeatureMethod : public AST {
     private:
         std::string name;
         std::string returnType;

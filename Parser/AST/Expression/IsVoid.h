@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class IsVoid : Expression {
+    class IsVoid : public Expression {
     private:
         Expression expression;
     public:

@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class Not : Expression {
+    class Not : public Expression {
     private:
         Expression expression;
     public:

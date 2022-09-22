@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class Tilde : Expression {
+    class Tilde : public Expression {
     private:
         Expression expression;
     public:

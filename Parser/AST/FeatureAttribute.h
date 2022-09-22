@@ -10,7 +10,7 @@
 
 namespace CoolCompiler {
 
-    class FeatureAttribute : AST {
+    class FeatureAttribute : public AST {
     private:
         std::string name;
         std::string type;

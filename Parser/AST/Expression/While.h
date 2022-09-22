@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class While : Expression {
+    class While : public Expression {
     private:
         Expression condition;
         AST body;

@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class Integer : Expression {
+    class Integer : public Expression {
     private:
         int value;
     public:

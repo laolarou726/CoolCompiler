@@ -10,7 +10,7 @@
 
 namespace CoolCompiler {
 
-    class Class : AST {
+    class Class : public AST {
     private:
         std::string name;
         std::vector<AST> features;

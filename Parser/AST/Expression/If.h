@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class If : Expression {
+    class If : public Expression {
     private:
         Expression condition;
         AST conditionTrue;

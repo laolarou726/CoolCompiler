@@ -68,7 +68,7 @@ namespace CoolCompiler {
         return tokenType;
     }
 
-    std::string Token::getLexeme() {
+    std::string Token::getLexeme() const {
         return lexeme;
     }
 
