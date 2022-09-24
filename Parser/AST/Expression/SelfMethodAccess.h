@@ -10,14 +10,14 @@
 
 namespace CoolCompiler {
 
-    class SelfMethodAccess : Expression {
+    class SelfMethodAccess : public Expression {
     private:
         std::string method;
-        std::vector<AST> arguments;
+        std::vector<Expression> arguments;
     public:
-        explicit SelfMethodAccess(const std::string &method, const std::vector<AST> &arguments);
+        explicit SelfMethodAccess(const std::string &method, const std::vector<Expression> &arguments);
         [[nodiscard]] std::string getMethod() const;
-        [[nodiscard]] std::vector<AST> getArguments() const;
+        [[nodiscard]] std::vector<Expression> getArguments() const;
     };
 
 } // CoolCompiler

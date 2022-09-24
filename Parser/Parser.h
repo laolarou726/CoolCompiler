@@ -39,10 +39,12 @@ namespace CoolCompiler {
         // Expressions
 
         void ASSIGNMENT(std::vector<Expression> &container);
-        void METHOD_ACCESS(std::vector<Expression> &container);
         void IF(std::vector<Expression> &container);
         void WHILE(std::vector<Expression> &container);
         void BLOCK(std::vector<Expression> &container);
+        void METHOD_ACCESS(std::vector<Expression> &container);
+        void AT_METHOD_ACCESS(std::vector<Expression> &container);
+        void SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression> &container);
         void LET(std::vector<Expression> &container);
         void CASE(std::vector<Expression> &container);
         void NEW(std::vector<Expression> &container);

@@ -15,6 +15,7 @@ namespace CoolCompiler {
         std::string type;
         Expression expression;
     public:
+        InnerLet(const std::string &name, const std::string &type);
         InnerLet(const std::string &name, const std::string &type, const Expression &expression);
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;

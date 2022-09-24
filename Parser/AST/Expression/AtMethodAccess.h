@@ -10,19 +10,19 @@
 
 namespace CoolCompiler {
 
-    class AtMethodAccess : Expression {
+    class AtMethodAccess : public Expression {
     private:
-        AST instance;
+        Expression instance;
         std::string type;
         std::string method;
-        std::vector<AST> arguments;
+        std::vector<Expression> arguments;
     public:
-        explicit AtMethodAccess(const AST &instance, const std::string &type,
-                       const std::string &method, const std::vector<AST> &arguments);
-        [[nodiscard]] AST getInstance() const;
+        explicit AtMethodAccess(const Expression &instance, const std::string &type,
+                       const std::string &method, const std::vector<Expression> &arguments);
+        [[nodiscard]] Expression getInstance() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] std::string getMethod() const;
-        [[nodiscard]] std::vector<AST> getArguments() const;
+        [[nodiscard]] std::vector<Expression> getArguments() const;
     };
 
 } // CoolCompiler

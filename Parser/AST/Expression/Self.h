@@ -9,7 +9,7 @@
 
 namespace CoolCompiler {
 
-    class Self : Expression {
+    class Self : public Expression {
     public:
         Self();
     };

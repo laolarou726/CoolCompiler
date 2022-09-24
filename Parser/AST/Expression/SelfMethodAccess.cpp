@@ -5,7 +5,7 @@
 #include "SelfMethodAccess.h"
 
 namespace CoolCompiler {
-    SelfMethodAccess::SelfMethodAccess(const std::string &method, const std::vector<AST> &arguments) : Expression("self_method_access") {
+    SelfMethodAccess::SelfMethodAccess(const std::string &method, const std::vector<Expression> &arguments) : Expression("self_method_access") {
         this->method = method;
         this->arguments = arguments;
     }
@@ -14,7 +14,7 @@ namespace CoolCompiler {
         return method;
     }
 
-    std::vector<AST> SelfMethodAccess::getArguments() const {
+    std::vector<Expression> SelfMethodAccess::getArguments() const {
         return arguments;
     }
 } // CoolCompiler

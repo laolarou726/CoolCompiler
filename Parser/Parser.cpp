@@ -11,9 +11,13 @@
 #include "AST/FeatureMethod.h"
 #include "AST/Expression/Assignment.h"
 // Expressions
+#include "AST/Expression/Self.h"
 #include "AST/Expression/If.h"
 #include "AST/Expression/While.h"
 #include "AST/Expression/Block.h"
+#include "AST/Expression/MethodAccess.h"
+#include "AST/Expression/SelfMethodAccess.h"
+#include "AST/Expression/AtMethodAccess.h"
 #include "AST/Expression/Let.h"
 #include "AST/Expression/InnerLet.h"
 #include "AST/Expression/Case.h"
@@ -191,10 +195,6 @@ namespace CoolCompiler {
         container.emplace_back(Assignment(Id(objId.getLexeme()), expressions.front()));
     }
 
-    void Parser::METHOD_ACCESS(std::vector<Expression> &container) {
-
-    }
-
     void Parser::IF(std::vector<Expression> &container) {
         expect(TokenType::IF);
 
@@ -240,18 +240,12 @@ namespace CoolCompiler {
 
         std::vector<Expression> expressions;
 
-        std::vector<Expression> expression1;
-        EXPRESSION(expression1);
-
-        expressions.emplace_back(expression1.front());
+        EXPRESSION(expressions);
 
         expect(SEMICOLON);
 
         while (peek().getTokenType() != RIGHT_BRACE){
-            std::vector<Expression> expression2;
-            EXPRESSION(expression2);
-
-            expressions.emplace_back(expression2.front());
+            EXPRESSION(expressions);
 
             expect(SEMICOLON);
         }
@@ -259,6 +253,85 @@ namespace CoolCompiler {
         expect(RIGHT_BRACE);
 
         container.emplace_back(Block(expressions));
+    }
+
+    void Parser::METHOD_ACCESS(std::vector<Expression> &container) {
+        std::vector<Expression> expressions;
+        EXPRESSION(expressions);
+
+        Expression instance = expressions.front();
+
+        Token methodToken = expect(OBJ_ID);
+
+        expect(LEFT_PAREN);
+
+        std::vector<Expression> parameters;
+
+        if(peek().getTokenType() != RIGHT_PAREN){
+            EXPRESSION(parameters);
+
+            while(peek().getTokenType() != RIGHT_PAREN){
+                expect(COMMA);
+                EXPRESSION(parameters);
+            }
+        }
+
+        expect(RIGHT_PAREN);
+
+        container.emplace_back(MethodAccess(instance, methodToken.getLexeme(), parameters));
+    }
+
+    void Parser::AT_METHOD_ACCESS(std::vector<Expression> &container) {
+        std::vector<Expression> expressions;
+        EXPRESSION(expressions);
+
+        Expression instance = expressions.front();
+
+        Token typeToken = expect(TYPE_ID);
+
+        expect(DOT);
+
+        Token methodToken = expect(OBJ_ID);
+
+        expect(LEFT_PAREN);
+
+        std::vector<Expression> parameters;
+
+        if(peek().getTokenType() != RIGHT_PAREN){
+            EXPRESSION(parameters);
+
+            while(peek().getTokenType() != RIGHT_PAREN){
+                expect(COMMA);
+                EXPRESSION(parameters);
+            }
+        }
+
+        expect(RIGHT_PAREN);
+
+        container.emplace_back(
+                AtMethodAccess(instance,
+                               typeToken.getLexeme(),
+                               methodToken.getLexeme(),
+                               parameters));
+    }
+
+    void Parser::SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression> &container) {
+        expect(LEFT_PAREN);
+
+        std::vector<Expression> parameters;
+
+        if(peek().getTokenType() != RIGHT_PAREN){
+            EXPRESSION(parameters);
+
+            while(peek().getTokenType() != RIGHT_PAREN){
+                expect(COMMA);
+                EXPRESSION(parameters);
+            }
+        }
+
+        expect(RIGHT_PAREN);
+
+        container.emplace_back(SelfMethodAccess(method, parameters));
     }
 
     void Parser::LET(std::vector<Expression> &container) {
@@ -277,10 +350,17 @@ namespace CoolCompiler {
             std::vector<Expression> assignExpressions;
             EXPRESSION(assignExpressions);
 
-            innerLets.emplace_back(
-                    InnerLet(objId.getLexeme(),
-                             typeId.getLexeme(),
-                             assignExpressions.front()));
+            if(assignExpressions.empty()){
+                innerLets.emplace_back(
+                        InnerLet(objId.getLexeme(),
+                                 typeId.getLexeme()));
+            }
+            else{
+                innerLets.emplace_back(
+                        InnerLet(objId.getLexeme(),
+                                 typeId.getLexeme(),
+                                 assignExpressions.front()));
+            }
         }
 
         if(peek().getTokenType() == COMMA){
@@ -479,7 +559,83 @@ namespace CoolCompiler {
 
     void Parser::EXPRESSION(std::vector<Expression> &container) {
         switch (peek().getTokenType()) {
+            case TokenType::SELF:
+                expect(TokenType::SELF);
+
+                if(peek().getTokenType() == RIGHT_BRACE || peek().getTokenType() == SEMICOLON){
+                    container.emplace_back(Self());
+                    break;
+                }
+
+                if(peek().getTokenType() == TokenType::OBJ_ID){
+                    Token methodToken = expect(TokenType::OBJ_ID);
+
+                    SELF_METHOD_ACCESS(methodToken.getLexeme(), container);
+
+                    break;
+                }
+
+                if(peek().getTokenType() == DOT){
+                    next();
+                    METHOD_ACCESS(container);
+                    break;
+                }
+
+                if(peek().getTokenType() == AT){
+                    next();
+                    AT_METHOD_ACCESS(container);
+                }
+
+                break;
             case TokenType::OBJ_ID:
+                if(peek(2).getTokenType() == ASSIGN)
+                    ASSIGNMENT(container);
+                else if(peek(2).getTokenType() == LEFT_PAREN){
+                    Token methodToken = expect(TokenType::OBJ_ID);
+
+                    SELF_METHOD_ACCESS(methodToken.getLexeme(), container);
+                } else{
+                    if(peek().getTokenType() == DOT){
+                        ID(container);
+                        next();
+                        METHOD_ACCESS(container);
+                        break;
+                    }
+                    else if(peek().getTokenType() == AT){
+                        ID(container);
+                        next();
+                        AT_METHOD_ACCESS(container);
+                    } else{
+                        std::vector<Expression> ids;
+                        ID(ids);
+
+                        Expression left = ids.front();
+
+                        switch (peek().getTokenType()) {
+                            case TokenType::PLUS:
+                                PLUS(left, container);
+                                break;
+                            case TokenType::MINUS:
+                                MINUS(left, container);
+                                break;
+                            case TokenType::STAR:
+                                STAR(left, container);
+                                break;
+                            case TokenType::SLASH:
+                                SLASH(left, container);
+                                break;
+                            case TokenType::LT:
+                                LESS_THAN(left, container);
+                                break;
+                            case TokenType::LTOE:
+                                LESS_THAN_EQ(left, container);
+                                break;
+                            case TokenType::EQ:
+                                EQ(left, container);
+                                break;
+                        }
+                    }
+                }
                 break;
             case TokenType::IF:
                 IF(container);

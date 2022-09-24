@@ -5,15 +5,15 @@
 #include "AtMethodAccess.h"
 
 namespace CoolCompiler {
-    AtMethodAccess::AtMethodAccess(const AST &instance, const std::string &type, const std::string &method,
-                                   const std::vector<AST> &arguments) : Expression("at_method_access") {
+    AtMethodAccess::AtMethodAccess(const Expression &instance, const std::string &type, const std::string &method,
+                                   const std::vector<Expression> &arguments) : Expression("at_method_access") {
         this->instance = instance;
         this->type = type;
         this->method = method;
         this->arguments = arguments;
     }
 
-    AST AtMethodAccess::getInstance() const {
+    Expression AtMethodAccess::getInstance() const {
         return instance;
     }
 
@@ -25,7 +25,7 @@ namespace CoolCompiler {
         return method;
     }
 
-    std::vector<AST> AtMethodAccess::getArguments() const {
+    std::vector<Expression> AtMethodAccess::getArguments() const {
         return arguments;
     }
 } // CoolCompiler
