@@ -11,10 +11,10 @@ namespace CoolCompiler {
 
     class Not : public Expression {
     private:
-        Expression expression;
+        Expression* expression;
     public:
-        explicit Not(const Expression &expression);
-        [[nodiscard]] Expression getExpression() const;
+        explicit Not(Expression *expression);
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

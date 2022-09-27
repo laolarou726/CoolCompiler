@@ -12,10 +12,10 @@ namespace CoolCompiler {
 
     class Block : public Expression {
     private:
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
     public:
-        explicit Block(const std::vector<Expression> &expressions);
-        [[nodiscard]] std::vector<Expression> getExpressions() const;
+        explicit Block(const std::vector<Expression*> &expressions);
+        [[nodiscard]] std::vector<Expression*> getExpressions() const;
     };
 
 } // CoolCompiler

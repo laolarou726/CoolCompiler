@@ -10,12 +10,12 @@
 
 namespace CoolCompiler {
 
-    class Program : AST {
+    class Program : public AST {
     private:
-        std::vector<AST> classes;
+        std::vector<AST*>* classes;
     public:
-        explicit Program(const std::vector<AST> &classes);
-        [[nodiscard]] std::vector<AST> getClasses() const;
+        explicit Program();
+        [[nodiscard]] std::vector<AST*>* getClasses() const;
     };
 
 } // CoolCompiler

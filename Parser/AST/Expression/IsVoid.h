@@ -11,10 +11,10 @@ namespace CoolCompiler {
 
     class IsVoid : public Expression {
     private:
-        Expression expression;
+        Expression* expression;
     public:
-        explicit IsVoid(const Expression &expression);
-        [[nodiscard]] Expression getExpression() const;
+        explicit IsVoid(Expression *expression);
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

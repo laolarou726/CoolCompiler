@@ -7,15 +7,15 @@
 namespace CoolCompiler {
 
     CoolCompiler::FeatureMethod::FeatureMethod(const std::string &name, const std::string &returnType,
-                                               const Expression &expression,
-                                               const std::vector<Formal> &formalArguments) : AST("feature_method") {
+                                               Expression* expression,
+                                               const std::vector<Formal*> &formalArguments) : AST("feature_method") {
         this->name = name;
         this->returnType = returnType;
         this->expression = expression;
         this->formalArguments = formalArguments;
     }
 
-    std::string CoolCompiler::FeatureMethod::getname() const {
+    std::string CoolCompiler::FeatureMethod::getName() const {
         return name;
     }
 
@@ -23,11 +23,11 @@ namespace CoolCompiler {
         return returnType;
     }
 
-    CoolCompiler::Expression CoolCompiler::FeatureMethod::getExpression() const {
+    Expression* CoolCompiler::FeatureMethod::getExpression() const {
         return expression;
     }
 
-    std::vector<Formal> CoolCompiler::FeatureMethod::getFormalArguments() const {
+    std::vector<Formal*> CoolCompiler::FeatureMethod::getFormalArguments() const {
         return formalArguments;
     }
 

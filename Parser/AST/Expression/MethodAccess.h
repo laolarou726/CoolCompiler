@@ -12,14 +12,14 @@ namespace CoolCompiler {
 
     class MethodAccess : public Expression {
     private:
-        Expression instance;
+        Expression* instance;
         std::string method;
-        std::vector<Expression> arguments;
+        std::vector<Expression*> arguments;
     public:
-        explicit MethodAccess(const Expression &instance, const std::string &method, const std::vector<Expression> &arguments);
-        [[nodiscard]] Expression getInstance() const;
+        explicit MethodAccess(Expression* instance, const std::string &method, const std::vector<Expression*> &arguments);
+        [[nodiscard]] Expression* getInstance() const;
         [[nodiscard]] std::string getMethod() const;
-        [[nodiscard]] std::vector<Expression> getArguments() const;
+        [[nodiscard]] std::vector<Expression*> getArguments() const;
     };
 
 } // CoolCompiler

@@ -12,12 +12,12 @@ namespace CoolCompiler {
 
     class Assignment : public Expression {
     private:
-        Id id;
-        Expression expression;
+        Id* id;
+        Expression* expression;
     public:
-        Assignment(const Id &id, const Expression &expression);
-        [[nodiscard]] Id getId() const;
-        [[nodiscard]] Expression getExpression() const;
+        Assignment(Id* id, Expression* expression);
+        [[nodiscard]] Id* getId() const;
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

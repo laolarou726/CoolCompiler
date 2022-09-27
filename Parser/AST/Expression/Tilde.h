@@ -11,10 +11,10 @@ namespace CoolCompiler {
 
     class Tilde : public Expression {
     private:
-        Expression expression;
+        Expression* expression;
     public:
-        explicit Tilde(const Expression &expression);
-        [[nodiscard]] Expression getExpression() const;
+        explicit Tilde(Expression *expression);
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

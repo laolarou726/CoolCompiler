@@ -6,7 +6,7 @@
 
 namespace CoolCompiler {
     FeatureAttribute::FeatureAttribute(const std::string &name, const std::string &type,
-                                       const Expression &init) : AST("feature_attr") {
+                                       Expression* init) : AST("feature_attr") {
         this->name = name;
         this->type = type;
         this->init = init;
@@ -20,7 +20,7 @@ namespace CoolCompiler {
         return type;
     }
 
-    Expression FeatureAttribute::getInit() const {
+    Expression* FeatureAttribute::getInit() const {
         return init;
     }
 } // CoolCompiler

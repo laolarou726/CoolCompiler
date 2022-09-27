@@ -11,6 +11,7 @@
 #include "AST/Class.h"
 #include "AST/Expression/Expression.h"
 #include "AST/Formal.h"
+#include "AST/Program.h"
 
 namespace CoolCompiler {
 
@@ -19,7 +20,7 @@ namespace CoolCompiler {
         std::vector<Token> tokens;
         int position;
         Token currentToken;
-        std::vector<AST> parseTree;
+        Program* parseTree;
 
         void Fail(const std::string &errorMessage);
         Token expect(TokenType tokenType, const std::string &errorMessage = "");
@@ -29,43 +30,43 @@ namespace CoolCompiler {
 
         // AST Resolver
 
-        void PROGRAM(std::vector<AST> &container);
-        void CLASS(std::vector<AST> &container);
-        void FEATURE_ATTR(const Token &objId, std::vector<AST> &container);
-        void FEATURE_METHOD(const Token &objId, std::vector<AST> &container);
-        void FEATURE(std::vector<AST> &container);
-        void FORMAL(std::vector<Formal> &container);
+        void PROGRAM();
+        void CLASS(std::vector<AST*> &container);
+        void FEATURE_ATTR(const Token &objId, std::vector<AST*> &container);
+        void FEATURE_METHOD(const Token &objId, std::vector<AST*> &container);
+        void FEATURE(std::vector<AST*> &container);
+        void FORMAL(std::vector<Formal*> &container);
 
         // Expressions
 
-        void ASSIGNMENT(std::vector<Expression> &container);
-        void IF(std::vector<Expression> &container);
-        void WHILE(std::vector<Expression> &container);
-        void BLOCK(std::vector<Expression> &container);
-        void METHOD_ACCESS(std::vector<Expression> &container);
-        void AT_METHOD_ACCESS(std::vector<Expression> &container);
-        void SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression> &container);
-        void LET(std::vector<Expression> &container);
-        void CASE(std::vector<Expression> &container);
-        void NEW(std::vector<Expression> &container);
-        void IS_VOID(std::vector<Expression> &container);
-        void PLUS(const Expression &left, std::vector<Expression> &container);
-        void MINUS(const Expression &left, std::vector<Expression> &container);
-        void STAR(const Expression &left, std::vector<Expression> &container);
-        void SLASH(const Expression &left, std::vector<Expression> &container);
-        void TILDE(std::vector<Expression> &container);
-        void LESS_THAN(const Expression &left, std::vector<Expression> &container);
-        void LESS_THAN_EQ(const Expression &left, std::vector<Expression> &container);
-        void EQ(const Expression &left, std::vector<Expression> &container);
-        void MATH_BINOP(TokenType tokenType, const Expression &left, std::vector<Expression> &container);
-        void NOT(std::vector<Expression> &container);
-        void PAREN(std::vector<Expression> &container);
-        void ID(std::vector<Expression> &container);
-        void INTEGER(std::vector<Expression> &container);
-        void STRING(std::vector<Expression> &container);
-        void TRUE(std::vector<Expression> &container);
-        void FALSE(std::vector<Expression> &container);
-        void EXPRESSION(std::vector<Expression> &container);
+        void ASSIGNMENT(std::vector<Expression*> &container);
+        void IF(std::vector<Expression*> &container);
+        void WHILE(std::vector<Expression*> &container);
+        void BLOCK(std::vector<Expression*> &container);
+        void METHOD_ACCESS(std::vector<Expression*> &container);
+        void AT_METHOD_ACCESS(std::vector<Expression*> &container);
+        void SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression*> &container);
+        void LET(std::vector<Expression*> &container);
+        void CASE(std::vector<Expression*> &container);
+        void NEW(std::vector<Expression*> &container);
+        void IS_VOID(std::vector<Expression*> &container);
+        void PLUS(Expression* left, std::vector<Expression*> &container);
+        void MINUS(Expression* left, std::vector<Expression*> &container);
+        void STAR(Expression* left, std::vector<Expression*> &container);
+        void SLASH(Expression* left, std::vector<Expression*> &container);
+        void TILDE(std::vector<Expression*> &container);
+        void LESS_THAN(Expression* left, std::vector<Expression*> &container);
+        void LESS_THAN_EQ(Expression* left, std::vector<Expression*> &container);
+        void EQ(Expression* left, std::vector<Expression*> &container);
+        void MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container);
+        void NOT(std::vector<Expression*> &container);
+        void PAREN(std::vector<Expression*> &container);
+        void ID(std::vector<Expression*> &container);
+        void INTEGER(std::vector<Expression*> &container);
+        void STRING(std::vector<Expression*> &container);
+        void TRUE(std::vector<Expression*> &container);
+        void FALSE(std::vector<Expression*> &container);
+        void EXPRESSION(std::vector<Expression*> &container);
 
         // End of Expressions
 
@@ -73,7 +74,7 @@ namespace CoolCompiler {
     public:
         explicit Parser(const std::vector<Token> &tokens);
         void parse();
-        [[nodiscard]] std::vector<AST> getParseTree() const;
+        [[nodiscard]] Program* getParseTree() const;
     };
 
 } // CoolCompiler

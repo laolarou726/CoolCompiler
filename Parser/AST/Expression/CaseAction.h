@@ -13,12 +13,12 @@ namespace CoolCompiler {
     private:
         std::string name;
         std::string type;
-        Expression expression;
+        Expression* expression;
     public:
-        CaseAction(const std::string &name, const std::string &type, const Expression &expression);
+        CaseAction(const std::string &name, const std::string &type, Expression *expression);
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
-        [[nodiscard]] Expression getExpression() const;
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

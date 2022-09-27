@@ -13,12 +13,12 @@ namespace CoolCompiler {
 
     class Case : public Expression {
     private:
-        Expression expression;
-        std::vector<CaseAction> actions;
+        Expression* expression;
+        std::vector<CaseAction*> actions;
     public:
-        Case(const Expression &expression, const std::vector<CaseAction> &actions);
-        [[nodiscard]] Expression getExpression() const;
-        [[nodiscard]] std::vector<CaseAction> getActions() const;
+        Case(Expression *expression, const std::vector<CaseAction*> &actions);
+        [[nodiscard]] Expression* getExpression() const;
+        [[nodiscard]] std::vector<CaseAction*> getActions() const;
     };
 
 } // CoolCompiler

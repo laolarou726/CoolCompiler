@@ -5,16 +5,16 @@
 #include "Assignment.h"
 
 namespace CoolCompiler {
-    Assignment::Assignment(const Id &id, const Expression &expression) : Expression("assignment")  {
+    Assignment::Assignment(Id* id, Expression* expression) : Expression("assignment")  {
         this->id = id;
         this->expression = expression;
     }
 
-    Id Assignment::getId() const {
+    Id* Assignment::getId() const {
         return id;
     }
 
-    Expression Assignment::getExpression() const {
+    Expression* Assignment::getExpression() const {
         return expression;
     }
 } // CoolCompiler

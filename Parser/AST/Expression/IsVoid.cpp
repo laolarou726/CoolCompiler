@@ -5,11 +5,11 @@
 #include "IsVoid.h"
 
 namespace CoolCompiler {
-    IsVoid::IsVoid(const Expression &expression) : Expression("is_void") {
+    IsVoid::IsVoid(Expression *expression) : Expression("is_void") {
         this->expression = expression;
     }
 
-    Expression IsVoid::getExpression() const {
+    Expression* IsVoid::getExpression() const {
         return expression;
     }
 } // CoolCompiler

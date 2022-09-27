@@ -16,15 +16,15 @@ namespace CoolCompiler {
     private:
         std::string name;
         std::string returnType;
-        Expression expression;
-        std::vector<Formal> formalArguments;
+        Expression* expression;
+        std::vector<Formal*> formalArguments;
     public:
         FeatureMethod(const std::string &name, const std::string &returnType,
-                      const Expression &expression, const std::vector<Formal> &formalArguments);
-        [[nodiscard]] std::string getname() const;
+                      Expression* expression, const std::vector<Formal*> &formalArguments);
+        [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getReturnType() const;
-        [[nodiscard]] Expression getExpression() const;
-        [[nodiscard]] std::vector<Formal> getFormalArguments() const;
+        [[nodiscard]] Expression* getExpression() const;
+        [[nodiscard]] std::vector<Formal*> getFormalArguments() const;
     };
 
 }

@@ -5,7 +5,7 @@
 #include "Class.h"
 
 namespace CoolCompiler {
-    Class::Class(const std::string &name, const std::vector<AST> &features, const std::string &inherits) : AST("class") {
+    Class::Class(const std::string &name, const std::vector<AST*> &features, const std::string &inherits) : AST("class") {
         this->name = name;
         this->features = features;
         this->inherits = inherits;
@@ -15,7 +15,7 @@ namespace CoolCompiler {
         return name;
     }
 
-    std::vector<AST> Class::getFeatures() const {
+    std::vector<AST*> Class::getFeatures() const {
         return features;
     }
 

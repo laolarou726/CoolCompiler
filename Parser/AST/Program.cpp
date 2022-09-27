@@ -5,11 +5,11 @@
 #include "Program.h"
 
 namespace CoolCompiler {
-    Program::Program(const std::vector<AST> &classes) : AST("program") {
-        this->classes = classes;
+    Program::Program() : AST("program") {
+        this->classes = new std::vector<AST*>();
     }
 
-    std::vector<AST> Program::getClasses() const {
+    std::vector<AST*>* Program::getClasses() const {
         return classes;
     }
 } // CoolCompiler

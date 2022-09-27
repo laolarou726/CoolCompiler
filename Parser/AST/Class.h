@@ -13,12 +13,12 @@ namespace CoolCompiler {
     class Class : public AST {
     private:
         std::string name;
-        std::vector<AST> features;
+        std::vector<AST*> features;
         std::string inherits;
     public:
-        Class(const std::string &name, const std::vector<AST> &features, const std::string &inherits);
+        Class(const std::string &name, const std::vector<AST*> &features, const std::string &inherits);
         [[nodiscard]] std::string getName() const;
-        [[nodiscard]] std::vector<AST> getFeatures() const;
+        [[nodiscard]] std::vector<AST*> getFeatures() const;
         [[nodiscard]] std::string getInherits() const;
     };
 

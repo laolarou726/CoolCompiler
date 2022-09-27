@@ -11,12 +11,12 @@ namespace CoolCompiler {
 
     class While : public Expression {
     private:
-        Expression condition;
-        AST body;
+        Expression* condition;
+        AST* body;
     public:
-        While(const Expression &condition, const AST &body);
-        [[nodiscard]] Expression getCondition() const;
-        [[nodiscard]] AST getBody() const;
+        While(Expression* condition, AST* body);
+        [[nodiscard]] Expression* getCondition() const;
+        [[nodiscard]] AST* getBody() const;
     };
 
 } // CoolCompiler

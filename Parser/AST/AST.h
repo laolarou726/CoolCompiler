@@ -10,7 +10,7 @@
 namespace CoolCompiler {
 
     class AST {
-    private:
+    protected:
         std::string identifier;
     public:
         AST();

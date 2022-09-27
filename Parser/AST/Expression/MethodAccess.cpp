@@ -5,15 +5,15 @@
 #include "MethodAccess.h"
 
 namespace CoolCompiler {
-    MethodAccess::MethodAccess(const Expression &instance,
+    MethodAccess::MethodAccess(Expression* instance,
                                const std::string &method,
-                               const std::vector<Expression> &arguments) : Expression("method_access") {
+                               const std::vector<Expression*> &arguments) : Expression("method_access") {
         this->instance = instance;
         this->method = method;
         this->arguments = arguments;
     }
 
-    Expression MethodAccess::getInstance() const {
+    Expression* MethodAccess::getInstance() const {
         return instance;
     }
 
@@ -21,7 +21,7 @@ namespace CoolCompiler {
         return method;
     }
 
-    std::vector<Expression> MethodAccess::getArguments() const {
+    std::vector<Expression*> MethodAccess::getArguments() const {
         return arguments;
     }
 } // CoolCompiler

@@ -14,13 +14,13 @@ namespace CoolCompiler {
     private:
         std::string name;
         std::string type;
-        Expression init;
+        Expression* init;
     public:
         FeatureAttribute(const std::string &name, const std::string &type,
-                         const Expression &init);
+                         Expression* init);
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
-        [[nodiscard]] Expression getInit() const;
+        [[nodiscard]] Expression* getInit() const;
     };
 
 } // CoolCompiler

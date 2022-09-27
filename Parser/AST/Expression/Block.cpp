@@ -5,11 +5,11 @@
 #include "Block.h"
 
 namespace CoolCompiler {
-    Block::Block(const std::vector<Expression> &expressions) : Expression("block") {
+    Block::Block(const std::vector<Expression*> &expressions) : Expression("block") {
         this->expressions = expressions;
     }
 
-    std::vector<Expression> Block::getExpressions() const {
+    std::vector<Expression*> Block::getExpressions() const {
         return expressions;
     }
 } // CoolCompiler

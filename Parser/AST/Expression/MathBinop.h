@@ -13,13 +13,13 @@ namespace CoolCompiler {
     class MathBinop : public Expression {
     private:
         TokenType operation;
-        Expression expressionLeft;
-        Expression expressionRight;
+        Expression* expressionLeft;
+        Expression* expressionRight;
     public:
-        MathBinop(TokenType operation, const Expression &expressionLeft, const Expression &expressionRight);
+        MathBinop(TokenType operation, Expression *expressionLeft, Expression *expressionRight);
         [[nodiscard]] TokenType getOperation() const;
-        [[nodiscard]] Expression getExpressionLeft() const;
-        [[nodiscard]] Expression getExpressionRight() const;
+        [[nodiscard]] Expression* getExpressionLeft() const;
+        [[nodiscard]] Expression* getExpressionRight() const;
     };
 
 } // CoolCompiler

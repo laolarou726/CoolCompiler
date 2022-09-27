@@ -5,21 +5,21 @@
 #include "If.h"
 
 namespace CoolCompiler {
-    If::If(const Expression &condition, const AST &conditionTrue, const AST &conditionFalse) : Expression("if") {
+    If::If(Expression* condition, AST* conditionTrue, AST* conditionFalse) : Expression("if") {
         this->condition = condition;
         this->conditionTrue = conditionTrue;
         this->conditionFalse = conditionFalse;
     }
 
-    Expression If::getCondition() const {
+    Expression* If::getCondition() const {
         return condition;
     }
 
-    AST If::getConditionTrue() const {
+    AST* If::getConditionTrue() const {
         return conditionTrue;
     }
 
-    AST If::getConditionFalse() const {
+    AST* If::getConditionFalse() const {
         return conditionFalse;
     }
 } // CoolCompiler

@@ -11,14 +11,14 @@ namespace CoolCompiler {
 
     class If : public Expression {
     private:
-        Expression condition;
-        AST conditionTrue;
-        AST conditionFalse;
+        Expression* condition;
+        AST* conditionTrue;
+        AST* conditionFalse;
     public:
-        If(const Expression &condition, const AST &conditionTrue, const AST& conditionFalse);
-        [[nodiscard]] Expression getCondition() const;
-        [[nodiscard]] AST getConditionTrue() const;
-        [[nodiscard]] AST getConditionFalse() const;
+        If(Expression* condition, AST* conditionTrue, AST* conditionFalse);
+        [[nodiscard]] Expression* getCondition() const;
+        [[nodiscard]] AST* getConditionTrue() const;
+        [[nodiscard]] AST* getConditionFalse() const;
     };
 
 } // CoolCompiler

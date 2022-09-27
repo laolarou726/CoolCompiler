@@ -5,11 +5,11 @@
 #include "Not.h"
 
 namespace CoolCompiler {
-    Not::Not(const Expression &expression) : Expression("not") {
+    Not::Not(Expression *expression) : Expression("not") {
         this->expression = expression;
     }
 
-    Expression Not::getExpression() const {
+    Expression* Not::getExpression() const {
         return expression;
     }
 } // CoolCompiler

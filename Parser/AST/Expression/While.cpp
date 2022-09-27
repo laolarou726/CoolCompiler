@@ -5,16 +5,16 @@
 #include "While.h"
 
 namespace CoolCompiler {
-    While::While(const Expression &condition, const AST &body) : Expression("while") {
+    While::While(Expression* condition, AST* body) : Expression("while") {
         this->condition = condition;
         this->body = body;
     }
 
-    Expression While::getCondition() const {
+    Expression* While::getCondition() const {
         return condition;
     }
 
-    AST While::getBody() const {
+    AST* While::getBody() const {
         return body;
     }
 } // CoolCompiler

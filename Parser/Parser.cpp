@@ -6,6 +6,8 @@
 #include <sstream>
 #include "Parser.h"
 // AST Structures
+#include "AST/AST.h"
+#include "AST/Program.h"
 #include "AST/Expression/Expression.h"
 #include "AST/FeatureAttribute.h"
 #include "AST/FeatureMethod.h"
@@ -39,7 +41,8 @@ namespace CoolCompiler {
     }
 
     void Parser::parse() {
-        PROGRAM(this->parseTree);
+        this->parseTree = new Program();
+        PROGRAM();
     }
 
     void Parser::Fail(const std::string &errorMessage = "") {
@@ -78,23 +81,23 @@ namespace CoolCompiler {
         return tokens[position + lookAhead];
     }
 
-    std::vector<AST> Parser::getParseTree() const {
+    Program* Parser::getParseTree() const {
         return parseTree;
     }
 
     // AST Resolver
 
-    void Parser::PROGRAM(std::vector<AST> &container) {
-        CLASS(container);
+    void Parser::PROGRAM() {
+        CLASS(*this->parseTree->getClasses());
         expect(SEMICOLON);
 
         while(hasNext()){
-            CLASS(container);
+            CLASS(*this->parseTree->getClasses());
             expect(SEMICOLON);
         }
     }
 
-    void Parser::CLASS(std::vector<AST> &container) {
+    void Parser::CLASS(std::vector<AST*> &container) {
         expect(TokenType::CLASS);
         Token typeId = expect(TYPE_ID);
 
@@ -105,30 +108,30 @@ namespace CoolCompiler {
         }
         expect(LEFT_BRACE);
 
-        std::vector<AST> features;
+        std::vector<AST*> features;
         while(peek().getTokenType() != RIGHT_BRACE && peek(2).getTokenType() != SEMICOLON){
             FEATURE(features);
             expect(SEMICOLON);
         }
         expect(RIGHT_BRACE);
 
-        container.emplace_back(Class(typeId.getLexeme(), features, inheritType.getLexeme()));
+        container.emplace_back(new Class(typeId.getLexeme(), features, inheritType.getLexeme()));
     }
 
-    void Parser::FEATURE_ATTR(const Token &objId, std::vector<AST> &container) {
+    void Parser::FEATURE_ATTR(const Token &objId, std::vector<AST*> &container) {
         Token typeId = expect(TYPE_ID);
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
 
         if(peek().getTokenType() == ASSIGN){
             next();
             EXPRESSION(expressions);
         }
 
-        container.emplace_back(FeatureAttribute(objId.getLexeme(), typeId.getLexeme(), expressions.front()));
+        container.emplace_back(new FeatureAttribute(objId.getLexeme(), typeId.getLexeme(), expressions.front()));
     }
 
-    void Parser::FEATURE_METHOD(const Token &objId, std::vector<AST> &container) {
-        std::vector<Formal> formals;
+    void Parser::FEATURE_METHOD(const Token &objId, std::vector<AST*> &container) {
+        std::vector<Formal*> formals;
 
         if(peek().getTokenType() != RIGHT_PAREN){
             FORMAL(formals);
@@ -146,19 +149,19 @@ namespace CoolCompiler {
 
         expect(LEFT_BRACE);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
         expect(RIGHT_BRACE);
 
         container.emplace_back(
-                FeatureMethod(objId.getLexeme(),
+                new FeatureMethod(objId.getLexeme(),
                               typeId.getLexeme(),
                               expressions.front(),
                               formals));
     }
 
-    void Parser::FEATURE(std::vector<AST> &container) {
+    void Parser::FEATURE(std::vector<AST*> &container) {
         Token objId = expect(OBJ_ID);
 
         if(peek().getTokenType() == LEFT_PAREN){
@@ -172,73 +175,73 @@ namespace CoolCompiler {
         }
     }
 
-    void Parser::FORMAL(std::vector<Formal> &container) {
+    void Parser::FORMAL(std::vector<Formal*> &container) {
         Token objId = expect(OBJ_ID);
 
         expect(COLON);
 
         Token typeId = expect(TYPE_ID);
 
-        container.emplace_back(Formal(objId.getLexeme(), typeId.getLexeme()));
+        container.emplace_back(new Formal(objId.getLexeme(), typeId.getLexeme()));
     }
 
     // Expressions
 
-    void Parser::ASSIGNMENT(std::vector<Expression> &container) {
+    void Parser::ASSIGNMENT(std::vector<Expression*> &container) {
         Token objId = expect(OBJ_ID);
 
         expect(ASSIGN);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        container.emplace_back(Assignment(Id(objId.getLexeme()), expressions.front()));
+        container.emplace_back(new Assignment(new Id(objId.getLexeme()), expressions.front()));
     }
 
-    void Parser::IF(std::vector<Expression> &container) {
+    void Parser::IF(std::vector<Expression*> &container) {
         expect(TokenType::IF);
 
-        std::vector<Expression> conditionExpression;
+        std::vector<Expression*> conditionExpression;
         EXPRESSION(conditionExpression);
 
         expect(THEN);
 
-        std::vector<Expression> trueExpression;
+        std::vector<Expression*> trueExpression;
         EXPRESSION(trueExpression);
 
         expect(ELSE);
 
-        std::vector<Expression> falseExpression;
+        std::vector<Expression*> falseExpression;
         EXPRESSION(falseExpression);
 
         expect(FI);
 
         container.emplace_back(
-                If(conditionExpression.front(),
+                new If(conditionExpression.front(),
                    trueExpression.front(),
                    falseExpression.front()));
     }
 
-    void Parser::WHILE(std::vector<Expression> &container) {
+    void Parser::WHILE(std::vector<Expression*> &container) {
         expect(TokenType::WHILE);
 
-        std::vector<Expression> conditionExpression;
+        std::vector<Expression*> conditionExpression;
         EXPRESSION(conditionExpression);
 
         expect(LOOP);
 
-        std::vector<Expression> bodyExpression;
+        std::vector<Expression*> bodyExpression;
         EXPRESSION(bodyExpression);
 
         expect(POOL);
 
-        container.emplace_back(While(conditionExpression.front(), bodyExpression.front()));
+        container.emplace_back(new While(conditionExpression.front(), bodyExpression.front()));
     }
 
-    void Parser::BLOCK(std::vector<Expression> &container) {
+    void Parser::BLOCK(std::vector<Expression*> &container) {
         expect(LEFT_BRACE);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
 
         EXPRESSION(expressions);
 
@@ -252,20 +255,20 @@ namespace CoolCompiler {
 
         expect(RIGHT_BRACE);
 
-        container.emplace_back(Block(expressions));
+        container.emplace_back(new Block(expressions));
     }
 
-    void Parser::METHOD_ACCESS(std::vector<Expression> &container) {
-        std::vector<Expression> expressions;
+    void Parser::METHOD_ACCESS(std::vector<Expression*> &container) {
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        Expression instance = expressions.front();
+        Expression* instance = expressions.front();
 
         Token methodToken = expect(OBJ_ID);
 
         expect(LEFT_PAREN);
 
-        std::vector<Expression> parameters;
+        std::vector<Expression*> parameters;
 
         if(peek().getTokenType() != RIGHT_PAREN){
             EXPRESSION(parameters);
@@ -278,14 +281,14 @@ namespace CoolCompiler {
 
         expect(RIGHT_PAREN);
 
-        container.emplace_back(MethodAccess(instance, methodToken.getLexeme(), parameters));
+        container.emplace_back(new MethodAccess(instance, methodToken.getLexeme(), parameters));
     }
 
-    void Parser::AT_METHOD_ACCESS(std::vector<Expression> &container) {
-        std::vector<Expression> expressions;
+    void Parser::AT_METHOD_ACCESS(std::vector<Expression*> &container) {
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        Expression instance = expressions.front();
+        Expression* instance = expressions.front();
 
         Token typeToken = expect(TYPE_ID);
 
@@ -295,7 +298,7 @@ namespace CoolCompiler {
 
         expect(LEFT_PAREN);
 
-        std::vector<Expression> parameters;
+        std::vector<Expression*> parameters;
 
         if(peek().getTokenType() != RIGHT_PAREN){
             EXPRESSION(parameters);
@@ -309,16 +312,16 @@ namespace CoolCompiler {
         expect(RIGHT_PAREN);
 
         container.emplace_back(
-                AtMethodAccess(instance,
+                new AtMethodAccess(instance,
                                typeToken.getLexeme(),
                                methodToken.getLexeme(),
                                parameters));
     }
 
-    void Parser::SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression> &container) {
+    void Parser::SELF_METHOD_ACCESS(const std::string &method, std::vector<Expression*> &container) {
         expect(LEFT_PAREN);
 
-        std::vector<Expression> parameters;
+        std::vector<Expression*> parameters;
 
         if(peek().getTokenType() != RIGHT_PAREN){
             EXPRESSION(parameters);
@@ -331,10 +334,10 @@ namespace CoolCompiler {
 
         expect(RIGHT_PAREN);
 
-        container.emplace_back(SelfMethodAccess(method, parameters));
+        container.emplace_back(new SelfMethodAccess(method, parameters));
     }
 
-    void Parser::LET(std::vector<Expression> &container) {
+    void Parser::LET(std::vector<Expression*> &container) {
         expect(TokenType::LET);
 
         Token objId = expect(OBJ_ID);
@@ -343,21 +346,21 @@ namespace CoolCompiler {
 
         Token typeId = expect(TYPE_ID);
 
-        std::vector<InnerLet> innerLets;
+        std::vector<InnerLet*> innerLets;
         if(peek().getTokenType() == ASSIGN){
             expect(ASSIGN);
 
-            std::vector<Expression> assignExpressions;
+            std::vector<Expression*> assignExpressions;
             EXPRESSION(assignExpressions);
 
             if(assignExpressions.empty()){
                 innerLets.emplace_back(
-                        InnerLet(objId.getLexeme(),
+                        new InnerLet(objId.getLexeme(),
                                  typeId.getLexeme()));
             }
             else{
                 innerLets.emplace_back(
-                        InnerLet(objId.getLexeme(),
+                        new InnerLet(objId.getLexeme(),
                                  typeId.getLexeme(),
                                  assignExpressions.front()));
             }
@@ -376,11 +379,11 @@ namespace CoolCompiler {
                 if(peek().getTokenType() == ASSIGN){
                     expect(ASSIGN);
 
-                    std::vector<Expression> assignExpressions1;
+                    std::vector<Expression*> assignExpressions1;
                     EXPRESSION(assignExpressions1);
 
                     innerLets.emplace_back(
-                            InnerLet(objId1.getLexeme(),
+                            new InnerLet(objId1.getLexeme(),
                                      typeId1.getLexeme(),
                                      assignExpressions1.front()));
                 }
@@ -389,16 +392,16 @@ namespace CoolCompiler {
 
         expect(IN);
 
-        std::vector<Expression> inExpressions;
+        std::vector<Expression*> inExpressions;
         EXPRESSION(inExpressions);
 
-        container.emplace_back(Let(innerLets, inExpressions.front()));
+        container.emplace_back(new Let(innerLets, inExpressions.front()));
     }
 
-    void Parser::CASE(std::vector<Expression> &container) {
+    void Parser::CASE(std::vector<Expression*> &container) {
         expect(TokenType::CASE);
 
-        std::vector<Expression> caseExpressions;
+        std::vector<Expression*> caseExpressions;
         EXPRESSION(caseExpressions);
 
         expect(OF);
@@ -411,13 +414,13 @@ namespace CoolCompiler {
 
         expect(GTOE);
 
-        std::vector<Expression> caseAction1;
+        std::vector<Expression*> caseAction1;
         EXPRESSION(caseAction1);
 
         expect(SEMICOLON);
 
-        std::vector<CaseAction> actions;
-        actions.emplace_back(CaseAction(objId1.getLexeme(), typeId1.getLexeme(), caseAction1.front()));
+        std::vector<CaseAction*> actions;
+        actions.emplace_back(new CaseAction(objId1.getLexeme(), typeId1.getLexeme(), caseAction1.front()));
 
         if(peek().getTokenType() == OBJ_ID){
             while (peek().getTokenType() != ESAC){
@@ -429,98 +432,98 @@ namespace CoolCompiler {
 
                 expect(GTOE);
 
-                std::vector<Expression> caseActionN;
+                std::vector<Expression*> caseActionN;
                 EXPRESSION(caseAction1);
 
                 expect(SEMICOLON);
 
-                actions.emplace_back(CaseAction(objIdN.getLexeme(), objIdN.getLexeme(), caseActionN.front()));
+                actions.emplace_back(new CaseAction(objIdN.getLexeme(), objIdN.getLexeme(), caseActionN.front()));
             }
         }
 
         expect(ESAC);
 
-        container.emplace_back(Case(caseExpressions.front(), actions));
+        container.emplace_back(new Case(caseExpressions.front(), actions));
     }
 
-    void Parser::NEW(std::vector<Expression> &container) {
+    void Parser::NEW(std::vector<Expression*> &container) {
         expect(TokenType::NEW);
 
         Token typeId = expect(TYPE_ID);
 
-        container.emplace_back(New(typeId.getLexeme()));
+        container.emplace_back(new New(typeId.getLexeme()));
     }
 
-    void Parser::IS_VOID(std::vector<Expression> &container) {
+    void Parser::IS_VOID(std::vector<Expression*> &container) {
         expect(TokenType::ISVOID);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        container.emplace_back(IsVoid(expressions.front()));
+        container.emplace_back(new IsVoid(expressions.front()));
     }
 
-    void Parser::PLUS(const Expression &left, std::vector<Expression> &container) {
+    void Parser::PLUS(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::PLUS, left, container);
     }
 
-    void Parser::MINUS(const Expression &left, std::vector<Expression> &container) {
+    void Parser::MINUS(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::MINUS, left, container);
     }
 
-    void Parser::STAR(const Expression &left, std::vector<Expression> &container) {
+    void Parser::STAR(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::STAR, left, container);
     }
 
-    void Parser::SLASH(const Expression &left, std::vector<Expression> &container) {
+    void Parser::SLASH(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::SLASH, left, container);
     }
 
-    void Parser::TILDE(std::vector<Expression> &container) {
+    void Parser::TILDE(std::vector<Expression*> &container) {
         expect(TokenType::TILDE);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        container.emplace_back(Tilde(expressions.front()));
+        container.emplace_back(new Tilde(expressions.front()));
     }
 
-    void Parser::LESS_THAN(const Expression &left, std::vector<Expression> &container) {
+    void Parser::LESS_THAN(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::LT, left, container);
     }
 
-    void Parser::LESS_THAN_EQ(const Expression &left, std::vector<Expression> &container) {
+    void Parser::LESS_THAN_EQ(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::LTOE, left, container);
     }
 
-    void Parser::EQ(const Expression &left, std::vector<Expression> &container) {
+    void Parser::EQ(Expression* left, std::vector<Expression*> &container) {
         MATH_BINOP(TokenType::EQ, left, container);
     }
 
-    void Parser::MATH_BINOP(TokenType tokenType, const Expression &left, std::vector<Expression> &container) {
+    void Parser::MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container) {
         expect(tokenType);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        Expression right = expressions.front();
+        Expression* right = expressions.front();
 
-        container.emplace_back(MathBinop(tokenType, left, right));
+        container.emplace_back(new MathBinop(tokenType, left, right));
     }
 
-    void Parser::NOT(std::vector<Expression> &container) {
+    void Parser::NOT(std::vector<Expression*> &container) {
         expect(TokenType::NOT);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
-        container.emplace_back(Not(expressions.front()));
+        container.emplace_back(new Not(expressions.front()));
     }
 
-    void Parser::PAREN(std::vector<Expression> &container) {
+    void Parser::PAREN(std::vector<Expression*> &container) {
         expect(LEFT_PAREN);
 
-        std::vector<Expression> expressions;
+        std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
         expect(RIGHT_PAREN);
@@ -528,42 +531,42 @@ namespace CoolCompiler {
         container.emplace_back(expressions.front());
     }
 
-    void Parser::ID(std::vector<Expression> &container) {
+    void Parser::ID(std::vector<Expression*> &container) {
         Token idToken = expect(TokenType::OBJ_ID);
 
-        container.emplace_back(Id(idToken.getLexeme()));
+        container.emplace_back(new Id(idToken.getLexeme()));
     }
 
-    void Parser::INTEGER(std::vector<Expression> &container) {
+    void Parser::INTEGER(std::vector<Expression*> &container) {
         Token numToken = expect(TokenType::NUMBER);
         int number = std::stoi(numToken.getLexeme());
 
-        container.emplace_back(Integer(number));
+        container.emplace_back(new Integer(number));
     }
 
-    void Parser::STRING(std::vector<Expression> &container) {
+    void Parser::STRING(std::vector<Expression*> &container) {
         Token strToken = expect(TokenType::STRING);
 
-        container.emplace_back(String(strToken.getLexeme()));
+        container.emplace_back(new String(strToken.getLexeme()));
     }
 
-    void Parser::TRUE(std::vector<Expression> &container) {
+    void Parser::TRUE(std::vector<Expression*> &container) {
         expect(TokenType::TRUE);
-        container.emplace_back(Boolean(true));
+        container.emplace_back(new Boolean(true));
     }
 
-    void Parser::FALSE(std::vector<Expression> &container) {
+    void Parser::FALSE(std::vector<Expression*> &container) {
         expect(TokenType::FALSE);
-        container.emplace_back(Boolean(false));
+        container.emplace_back(new Boolean(false));
     }
 
-    void Parser::EXPRESSION(std::vector<Expression> &container) {
+    void Parser::EXPRESSION(std::vector<Expression*> &container) {
         switch (peek().getTokenType()) {
             case TokenType::SELF:
                 expect(TokenType::SELF);
 
                 if(peek().getTokenType() == RIGHT_BRACE || peek().getTokenType() == SEMICOLON){
-                    container.emplace_back(Self());
+                    container.emplace_back(new Self());
                     break;
                 }
 
@@ -606,10 +609,10 @@ namespace CoolCompiler {
                         next();
                         AT_METHOD_ACCESS(container);
                     } else{
-                        std::vector<Expression> ids;
+                        std::vector<Expression*> ids;
                         ID(ids);
 
-                        Expression left = ids.front();
+                        Expression* left = ids.front();
 
                         switch (peek().getTokenType()) {
                             case TokenType::PLUS:
@@ -680,10 +683,10 @@ namespace CoolCompiler {
                 FALSE(container);
                 break;
             default:
-                std::vector<Expression> leftExpressions;
+                std::vector<Expression*> leftExpressions;
                 EXPRESSION(leftExpressions);
 
-                Expression left = leftExpressions.front();
+                Expression* left = leftExpressions.front();
 
                 switch (peek().getTokenType()) {
                     case TokenType::PLUS:

@@ -13,12 +13,12 @@ namespace CoolCompiler {
 
     class Let : public Expression {
     private:
-        std::vector<InnerLet> parameters;
-        Expression expression;
+        std::vector<InnerLet*> parameters;
+        Expression* expression;
     public:
-        Let(const std::vector<InnerLet> &parameters, const Expression &expression);
-        [[nodiscard]] std::vector<InnerLet> getParameters() const;
-        [[nodiscard]] Expression getExpression() const;
+        Let(const std::vector<InnerLet*> &parameters, Expression* expression);
+        [[nodiscard]] std::vector<InnerLet*> getParameters() const;
+        [[nodiscard]] Expression* getExpression() const;
     };
 
 } // CoolCompiler

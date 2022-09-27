@@ -5,7 +5,7 @@
 #include "CaseAction.h"
 
 namespace CoolCompiler {
-    CaseAction::CaseAction(const std::string &name, const std::string &type, const Expression &expression) : Expression("case_action") {
+    CaseAction::CaseAction(const std::string &name, const std::string &type, Expression *expression) : Expression("case_action") {
         this->name = name;
         this->type = type;
         this->expression = expression;
@@ -19,7 +19,7 @@ namespace CoolCompiler {
         return type;
     }
 
-    Expression CaseAction::getExpression() const {
+    Expression* CaseAction::getExpression() const {
         return expression;
     }
 } // CoolCompiler

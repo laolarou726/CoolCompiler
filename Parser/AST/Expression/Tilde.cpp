@@ -5,11 +5,11 @@
 #include "Tilde.h"
 
 namespace CoolCompiler {
-    Tilde::Tilde(const Expression &expression) : Expression("tilde") {
+    Tilde::Tilde(Expression *expression) : Expression("tilde") {
         this->expression = expression;
     }
 
-    Expression Tilde::getExpression() const {
+    Expression* Tilde::getExpression() const {
         return expression;
     }
 } // CoolCompiler
