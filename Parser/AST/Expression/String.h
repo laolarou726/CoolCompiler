@@ -18,7 +18,7 @@ namespace CoolCompiler {
 
         void print(int depth) override{
             printTab(depth);
-            std::cout << "[STRING " << value << "]" << std::endl;
+            std::cout << "[STRING \"" << value << "\"]" << std::endl;
         }
     };
 

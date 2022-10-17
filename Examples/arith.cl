@@ -192,7 +192,7 @@ class A2I {
    a2i converts an ASCII string into an integer.  The empty string
 is converted to 0.  Signed and unsigned strings are handled.  The
 method aborts if the string does not represent an integer.  Very
-long strings of digits produce strange answers because of arithmetic 
+long strings of digits produce strange answers because of arithmetic
 overflow.
 
 *)
@@ -226,7 +226,7 @@ overflow.
         )
      };
 
-(* i2a converts an integer to a string.  Positive and negative 
+(* i2a converts an integer to a string.  Positive and negative
    numbers are handled correctly.  *)
 
     i2a(i : Int) : String {
@@ -235,8 +235,8 @@ overflow.
           "-".concat(i2a_aux(i * ~1)) 
         fi fi
     };
-	
-(* i2a_aux is an example using recursion.  *)		
+
+(* i2a_aux is an example using recursion.  *)
 
     i2a_aux(i : Int) : String {
         if i = 0 then "" else 

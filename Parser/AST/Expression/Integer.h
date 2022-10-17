@@ -18,7 +18,7 @@ namespace CoolCompiler {
 
         void print(int depth) override{
             printTab(depth);
-            std::cout << value << std::endl;
+            std::cout << "[INTEGER <" << value << ">]" << std::endl;
         }
     };
 

@@ -36,7 +36,7 @@ namespace CoolCompiler {
             printTab(depth);
             std::cout << ") => [" << std::endl;
 
-            expression->print(depth + 2);
+            expression->print(depth + 1);
 
             printTab(depth);
             std::cout << "]" << std::endl;

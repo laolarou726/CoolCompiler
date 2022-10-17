@@ -5,6 +5,12 @@
 #include "FeatureAttribute.h"
 
 namespace CoolCompiler {
+    FeatureAttribute::FeatureAttribute(const std::string &name, const std::string &type) {
+        this->name = name;
+        this->type = type;
+        this->init = nullptr;
+    }
+
     FeatureAttribute::FeatureAttribute(const std::string &name, const std::string &type,
                                        Expression* init) : AST("feature_attr") {
         this->name = name;
@@ -23,4 +29,5 @@ namespace CoolCompiler {
     Expression* FeatureAttribute::getInit() const {
         return init;
     }
+
 } // CoolCompiler

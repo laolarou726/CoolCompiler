@@ -16,8 +16,8 @@ namespace CoolCompiler {
         std::string type;
         Expression* init;
     public:
-        FeatureAttribute(const std::string &name, const std::string &type,
-                         Expression* init);
+        FeatureAttribute(const std::string &name, const std::string &type);
+        FeatureAttribute(const std::string &name, const std::string &type, Expression* init);
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getInit() const;
@@ -25,7 +25,9 @@ namespace CoolCompiler {
         void print(int depth) override{
             printTab(depth);
             std::cout << "ATTRIBUTE [" << name << "]<"  << type << "> => ";
-            init->print(depth + 1);
+
+            if(init != nullptr)
+                init->print(depth + 1);
         }
     };
 

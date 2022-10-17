@@ -125,9 +125,11 @@ namespace CoolCompiler {
         if(peek().getTokenType() == ASSIGN){
             next();
             EXPRESSION(expressions);
+            container.emplace_back(new FeatureAttribute(objId.getLexeme(), typeId.getLexeme(), expressions.front()));
+            return;
         }
 
-        container.emplace_back(new FeatureAttribute(objId.getLexeme(), typeId.getLexeme(), expressions.front()));
+        container.emplace_back(new FeatureAttribute(objId.getLexeme(), typeId.getLexeme()));
     }
 
     void Parser::FEATURE_METHOD(const Token &objId, std::vector<AST*> &container) {
@@ -258,12 +260,7 @@ namespace CoolCompiler {
         container.emplace_back(new Block(expressions));
     }
 
-    void Parser::METHOD_ACCESS(std::vector<Expression*> &container) {
-        std::vector<Expression*> expressions;
-        EXPRESSION(expressions);
-
-        Expression* instance = expressions.front();
-
+    void Parser::METHOD_ACCESS(Expression* left, std::vector<Expression*> &container) {
         Token methodToken = expect(OBJ_ID);
 
         expect(LEFT_PAREN);
@@ -281,15 +278,10 @@ namespace CoolCompiler {
 
         expect(RIGHT_PAREN);
 
-        container.emplace_back(new MethodAccess(instance, methodToken.getLexeme(), parameters));
+        container.emplace_back(new MethodAccess(left, methodToken.getLexeme(), parameters));
     }
 
-    void Parser::AT_METHOD_ACCESS(std::vector<Expression*> &container) {
-        std::vector<Expression*> expressions;
-        EXPRESSION(expressions);
-
-        Expression* instance = expressions.front();
-
+    void Parser::AT_METHOD_ACCESS(Expression* left, std::vector<Expression*> &container) {
         Token typeToken = expect(TYPE_ID);
 
         expect(DOT);
@@ -312,7 +304,7 @@ namespace CoolCompiler {
         expect(RIGHT_PAREN);
 
         container.emplace_back(
-                new AtMethodAccess(instance,
+                new AtMethodAccess(left,
                                typeToken.getLexeme(),
                                methodToken.getLexeme(),
                                parameters));
@@ -578,17 +570,6 @@ namespace CoolCompiler {
                     break;
                 }
 
-                if(peek().getTokenType() == DOT){
-                    next();
-                    METHOD_ACCESS(container);
-                    break;
-                }
-
-                if(peek().getTokenType() == AT){
-                    next();
-                    AT_METHOD_ACCESS(container);
-                }
-
                 break;
             case TokenType::OBJ_ID:
                 if(peek(2).getTokenType() == ASSIGN)
@@ -598,45 +579,52 @@ namespace CoolCompiler {
 
                     SELF_METHOD_ACCESS(methodToken.getLexeme(), container);
                 } else{
+                    std::vector<Expression*> ids;
+                    ID(ids);
+
+                    Expression* left = ids.back();
+
+                    std::vector<Expression*> expressions;
+                    bool isMethodDispatch;
+
                     if(peek().getTokenType() == DOT){
-                        ID(container);
                         next();
-                        METHOD_ACCESS(container);
-                        break;
+                        METHOD_ACCESS(left, expressions);
+                        isMethodDispatch = true;
                     }
                     else if(peek().getTokenType() == AT){
-                        ID(container);
                         next();
-                        AT_METHOD_ACCESS(container);
-                    } else{
-                        std::vector<Expression*> ids;
-                        ID(ids);
+                        AT_METHOD_ACCESS(left, expressions);
+                        isMethodDispatch = true;
+                    }
 
-                        Expression* left = ids.front();
+                    Expression* expr = isMethodDispatch ? expressions.back() : left;
 
-                        switch (peek().getTokenType()) {
-                            case TokenType::PLUS:
-                                PLUS(left, container);
-                                break;
-                            case TokenType::MINUS:
-                                MINUS(left, container);
-                                break;
-                            case TokenType::STAR:
-                                STAR(left, container);
-                                break;
-                            case TokenType::SLASH:
-                                SLASH(left, container);
-                                break;
-                            case TokenType::LT:
-                                LESS_THAN(left, container);
-                                break;
-                            case TokenType::LTOE:
-                                LESS_THAN_EQ(left, container);
-                                break;
-                            case TokenType::EQ:
-                                EQ(left, container);
-                                break;
-                        }
+                    switch (peek().getTokenType()) {
+                        case TokenType::PLUS:
+                            PLUS(expr, container);
+                            break;
+                        case TokenType::MINUS:
+                            MINUS(expr, container);
+                            break;
+                        case TokenType::STAR:
+                            STAR(expr, container);
+                            break;
+                        case TokenType::SLASH:
+                            SLASH(expr, container);
+                            break;
+                        case TokenType::LT:
+                            LESS_THAN(expr, container);
+                            break;
+                        case TokenType::LTOE:
+                            LESS_THAN_EQ(expr, container);
+                            break;
+                        case TokenType::EQ:
+                            EQ(expr, container);
+                            break;
+                        default:
+                            container.emplace_back(expr);
+                            break;
                     }
                 }
                 break;
@@ -710,6 +698,17 @@ namespace CoolCompiler {
                     case TokenType::EQ:
                         EQ(left, container);
                         break;
+                    default:
+                        if(peek().getTokenType() == DOT){
+                            next();
+                            METHOD_ACCESS(left, container);
+                            break;
+                        }
+                        else if(peek().getTokenType() == AT){
+                            next();
+                            AT_METHOD_ACCESS(left, container);
+                            break;
+                        }
                 }
         }
     }

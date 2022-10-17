@@ -21,16 +21,19 @@ namespace CoolCompiler {
 
         void print(int depth) override{
             printTab(depth);
-            std::cout << "SELF_METHOD_ACCESS [" << method << std::endl;
+            std::cout << "SELF_METHOD_ACCESS [" << std::endl;
 
             printTab(depth + 1);
-            std::cout << method << "(" << method << std::endl;
+            std::cout << method << "(" << std::endl;
 
             for(Expression *expr : arguments)
-                expr->print(depth + 1);
+                expr->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << ")" << std::endl;
 
             printTab(depth);
-            std::cout << ")]" << std::endl;
+            std::cout << "]" << std::endl;
         }
     };
 
