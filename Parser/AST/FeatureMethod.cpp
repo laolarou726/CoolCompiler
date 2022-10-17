@@ -6,7 +6,8 @@
 
 namespace CoolCompiler {
 
-    CoolCompiler::FeatureMethod::FeatureMethod(const std::string &name, const std::string &returnType,
+    CoolCompiler::FeatureMethod::FeatureMethod(const std::string &name,
+                                               const std::string &returnType,
                                                Expression* expression,
                                                const std::vector<Formal*> &formalArguments) : AST("feature_method") {
         this->name = name;

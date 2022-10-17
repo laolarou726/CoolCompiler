@@ -32,6 +32,11 @@ namespace CoolCompiler {
 
         bool isObjId(int &pos, std::string &lexeme);
 
+        bool isComment(int &pos, std::string &lexeme);
+
+        bool isOneLineComment(int &pos, std::string &lexeme);
+
+
         static bool isSelf(std::string &lexeme);
 
         static bool isKeyword(std::string &lexeme);

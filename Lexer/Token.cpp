@@ -2,7 +2,9 @@
 // Created by luoli on 2022/9/14.
 //
 
+#include <algorithm>
 #include "Token.h"
+#include "../Utils/StringUtils.h"
 
 namespace CoolCompiler {
 
@@ -51,6 +53,20 @@ namespace CoolCompiler {
             {"true",     TokenType::TRUE}
     };
 
+    std::unordered_map<char, char> Token::specialCharacters = {
+            {'a', '\a'},
+            {'b', '\b'},
+            {'f', '\f'},
+            {'n', '\n'},
+            {'r', '\r'},
+            {'t', '\t'},
+            {'v', '\v'},
+            {'\\', '\\'},
+            {'\'', '\''},
+            {'"', '\"'},
+            {'?', '\?'}
+    };
+
     Token::Token() {
         this->tokenType = E0F;
         this->contextPosition = -1;
@@ -80,11 +96,30 @@ namespace CoolCompiler {
         return lineNumber;
     }
 
-    bool Token::isSingleCharacterToken(std::string &token) {
+    bool Token::isSpecialCharacter(const char &token) {
+        return specialCharacters.find(token) != specialCharacters.end();
+    }
+
+    bool Token::isSingleCharacterToken(const std::string &token) {
         return singleCharacterTokens.find(token) != singleCharacterTokens.end();
     }
 
-    bool Token::isKeyWord(std::string &token) {
+    bool Token::isKeyWord(const std::string &token) {
         return keywords.find(token) != keywords.end();
     }
+
+    std::string Token::recoverCharTrans(const std::string &value) {
+        std::string val = value;
+
+        for(auto p : specialCharacters){
+            std::string from, to = "\\";
+            from.push_back(p.second);
+            to.push_back(p.first);
+
+            StringUtils::replaceAll(val, from, to);
+        }
+
+        return val;
+    }
+
 } // CoolCompiler

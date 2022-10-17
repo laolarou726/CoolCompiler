@@ -6,7 +6,7 @@
 #include "Parser/AST/Expression/Let.h"
 
 int main() {
-    CoolCompiler::Lexer l = CoolCompiler::Lexer("Examples/palindrome.cl");
+    CoolCompiler::Lexer l = CoolCompiler::Lexer("Examples/lam.cl");
     l.doScan();
 
     CoolCompiler::Parser p = CoolCompiler::Parser(l.getTokens());

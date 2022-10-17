@@ -6,6 +6,7 @@
 #define COOLCOMPILER_STRING_H
 
 #include "Expression.h"
+#include "../../../Lexer/Token.h"
 
 namespace CoolCompiler {
 
@@ -18,7 +19,11 @@ namespace CoolCompiler {
 
         void print(int depth) override{
             printTab(depth);
-            std::cout << "[STRING \"" << value << "\"]" << std::endl;
+            std::cout
+            << "[STRING \""
+            << Token::recoverCharTrans(value)
+            << "\"]"
+            << std::endl;
         }
     };
 

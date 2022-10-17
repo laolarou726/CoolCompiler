@@ -21,11 +21,16 @@ namespace CoolCompiler {
 
         void print(int depth) override{
             printTab(depth);
-            std::cout << "(";
+            std::cout << "(" << std::endl;
+
             id->print(depth + 1);
+
             printTab(depth + 1);
-            std::cout << "=>" << std::endl;
+            std::cout << "<-" << std::endl;
+
             expression->print(depth + 1);
+
+            printTab(depth);
             std::cout << ")" << std::endl;
         }
     };

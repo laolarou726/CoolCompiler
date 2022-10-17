@@ -7,6 +7,7 @@
 
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace CoolCompiler {
 
@@ -49,12 +50,17 @@ namespace CoolCompiler {
 
         [[nodiscard]] int getLineNumber() const;
 
-        static bool isSingleCharacterToken(std::string &token);
+        static bool isSingleCharacterToken(const std::string &token);
 
-        static bool isKeyWord(std::string &token);
+        static bool isKeyWord(const std::string &token);
+
+        static bool isSpecialCharacter(const char &token);
+
+        static std::string recoverCharTrans(const std::string &value);
 
         static std::unordered_map<std::string, TokenType> singleCharacterTokens;
         static std::unordered_map<std::string, TokenType> keywords;
+        static std::unordered_map<char, char> specialCharacters;
     };
 
 } // CoolCompiler

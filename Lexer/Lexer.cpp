@@ -44,6 +44,10 @@ namespace CoolCompiler {
     bool Lexer::isLiteral() {
         int pos = sourcePosition;
         std::string lexeme;
+        std::string comment;
+
+        isComment(pos, comment);
+        isOneLineComment(pos, comment);
 
         return isTypeId(pos, lexeme) ||
                isObjId(pos, lexeme) ||
@@ -55,7 +59,25 @@ namespace CoolCompiler {
         if (source[pos] == '"') {
             pos += 1;
 
+            bool isSpecialChar = false;
             while (source[pos] != '"') {
+                if(isSpecialChar){
+                    if(Token::isSpecialCharacter(source[pos + 1])){
+                        lexeme += Token::specialCharacters[source[pos + 1]];
+                    }
+
+                    pos += 2;
+                    contextPosition++;
+                    isSpecialChar = false;
+                    continue;
+                }
+
+                if (source[pos] == '\\')
+                {
+                    isSpecialChar = true;
+                    continue;
+                }
+
                 moveNext(pos, lexeme);
 
                 if (pos + 1 > source.length())
@@ -203,6 +225,67 @@ namespace CoolCompiler {
         return true;
     }
 
+    bool Lexer::isComment(int &pos, std::string &lexeme) {
+        std::string ch;
+        ch.push_back(source[sourcePosition]);
+
+        if (!Token::isSingleCharacterToken(ch)) return false;
+
+        TokenType tokenType = Token::singleCharacterTokens[ch];
+
+        if(tokenType != LEFT_PAREN) return false;
+
+        char nextCh = source[sourcePosition + 1];
+
+        if(nextCh != '*') return false;
+
+        moveNext(pos, lexeme);
+        moveNext(pos, lexeme);
+
+        while (pos + 1 < source.length() && !skipBlank()) {
+            moveNext(pos, lexeme);
+
+            if (source[pos] == '*' && source[pos + 1] == ')')
+                break;
+        }
+
+        moveNext(pos, lexeme);
+        moveNext(pos, lexeme);
+
+        sourcePosition = pos;
+
+        return true;
+    }
+
+    bool Lexer::isOneLineComment(int &pos, std::string &lexeme) {
+        std::string ch;
+        ch.push_back(source[sourcePosition]);
+
+        if (!Token::isSingleCharacterToken(ch)) return false;
+
+        TokenType tokenType = Token::singleCharacterTokens[ch];
+
+        if(tokenType != MINUS) return false;
+
+        char nextCh = source[sourcePosition + 1];
+
+        if(nextCh != '-') return false;
+
+        moveNext(pos, lexeme);
+        moveNext(pos, lexeme);
+
+        while ((pos + 1 < source.length() || isspace(source[pos])) && source[pos] != '\n') {
+            moveNext(pos, lexeme);
+
+            if (source[pos] == '\n')
+                break;
+        }
+
+        sourcePosition = pos;
+
+        return true;
+    }
+
     void Lexer::doScan() {
         while (sourcePosition < source.length()) {
             if (skipBlank()) break;
@@ -228,4 +311,5 @@ namespace CoolCompiler {
     std::vector<Token> Lexer::getTokens() const {
         return tokens;
     }
+
 } // CoolCompiler

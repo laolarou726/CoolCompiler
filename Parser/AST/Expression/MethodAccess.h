@@ -26,14 +26,17 @@ namespace CoolCompiler {
             std::cout << "METHOD_ACCESS [" << std::endl;
 
             instance->print(depth + 1);
-            printTab(depth);
+            printTab(depth + 1);
             std::cout << "=> " << method << "(" << std::endl;
 
             for(Expression *expr : arguments)
-                expr->print(depth + 1);
+                expr->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << ")" << std::endl;
 
             printTab(depth);
-            std::cout << ")]" << std::endl;
+            std::cout << "]" << std::endl;
         }
     };
 
