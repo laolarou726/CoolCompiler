@@ -18,6 +18,16 @@ namespace CoolCompiler {
         Assignment(Id* id, Expression* expression);
         [[nodiscard]] Id* getId() const;
         [[nodiscard]] Expression* getExpression() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "(";
+            id->print(depth + 1);
+            printTab(depth + 1);
+            std::cout << "=>" << std::endl;
+            expression->print(depth + 1);
+            std::cout << ")" << std::endl;
+        }
     };
 
 } // CoolCompiler

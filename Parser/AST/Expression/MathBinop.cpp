@@ -5,8 +5,9 @@
 #include "MathBinop.h"
 
 namespace CoolCompiler {
-    MathBinop::MathBinop(TokenType operation, Expression *expressionLeft,
+    MathBinop::MathBinop(const std::string &token, TokenType operation, Expression *expressionLeft,
                          Expression *expressionRight) : Expression("math_binop") {
+        this->token = token;
         this->operation = operation;
         this->expressionLeft = expressionLeft;
         this->expressionRight = expressionRight;

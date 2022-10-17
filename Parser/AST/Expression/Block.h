@@ -16,6 +16,17 @@ namespace CoolCompiler {
     public:
         explicit Block(const std::vector<Expression*> &expressions);
         [[nodiscard]] std::vector<Expression*> getExpressions() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "BLOCK [" << std::endl;
+
+            for(Expression *expr : expressions)
+                expr->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

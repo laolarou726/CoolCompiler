@@ -23,6 +23,21 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] std::string getMethod() const;
         [[nodiscard]] std::vector<Expression*> getArguments() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "AT_ACCESS <" << type << "> ["  << method << "](" << std::endl;
+
+            for(Expression *expr : arguments)
+                expr->print(depth + 1);
+
+            printTab(depth);
+            std::cout << ")" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "INSTANCE:" << std::endl;
+            instance->print(depth + 2);
+        }
     };
 
 } // CoolCompiler

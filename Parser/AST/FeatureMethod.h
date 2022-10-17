@@ -25,6 +25,22 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getReturnType() const;
         [[nodiscard]] Expression* getExpression() const;
         [[nodiscard]] std::vector<Formal*> getFormalArguments() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "METHOD <" << returnType << "> " << name << " (" << std::endl;
+
+            for(Formal *ast : formalArguments)
+                ast->print(depth + 1);
+
+            printTab(depth);
+            std::cout << ") => [" << std::endl;
+
+            expression->print(depth + 2);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 }

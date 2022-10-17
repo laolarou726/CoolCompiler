@@ -501,14 +501,14 @@ namespace CoolCompiler {
     }
 
     void Parser::MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container) {
-        expect(tokenType);
+        Token token = expect(tokenType);
 
         std::vector<Expression*> expressions;
         EXPRESSION(expressions);
 
         Expression* right = expressions.front();
 
-        container.emplace_back(new MathBinop(tokenType, left, right));
+        container.emplace_back(new MathBinop(token.getLexeme(), tokenType, left, right));
     }
 
     void Parser::NOT(std::vector<Expression*> &container) {

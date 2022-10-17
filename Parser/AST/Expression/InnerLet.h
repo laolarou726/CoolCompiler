@@ -20,6 +20,16 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getExpression() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << name << " : <" << type << ">[ <-" << std::endl;
+
+            expression->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

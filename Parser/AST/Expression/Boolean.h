@@ -14,7 +14,12 @@ namespace CoolCompiler {
         bool value;
     public:
         explicit Boolean(bool value);
-        bool getValue() const;
+        [[nodiscard]] bool getValue() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << (value ? "TRUE" : "FALSE") << std::endl;
+        }
     };
 
 } // CoolCompiler

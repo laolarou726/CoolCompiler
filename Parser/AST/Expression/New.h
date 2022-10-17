@@ -15,6 +15,11 @@ namespace CoolCompiler {
     public:
         explicit New(const std::string &type);
         [[nodiscard]] std::string getType() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "NEW [" << type << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

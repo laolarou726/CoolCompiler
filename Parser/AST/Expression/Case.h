@@ -19,6 +19,18 @@ namespace CoolCompiler {
         Case(Expression *expression, const std::vector<CaseAction*> &actions);
         [[nodiscard]] Expression* getExpression() const;
         [[nodiscard]] std::vector<CaseAction*> getActions() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "CASE [" << std::endl;
+
+            expression->print(depth + 1);
+
+            std::cout << "]" << std::endl;
+
+            for(CaseAction *ca : actions)
+                ca->print(depth + 1);
+        }
     };
 
 } // CoolCompiler

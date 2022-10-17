@@ -21,6 +21,12 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getInit() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "ATTRIBUTE [" << name << "]<"  << type << "> => ";
+            init->print(depth + 1);
+        }
     };
 
 } // CoolCompiler

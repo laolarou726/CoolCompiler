@@ -6,6 +6,7 @@
 #define COOLCOMPILER_CLASS_H
 
 #include <vector>
+#include <iostream>
 #include "AST.h"
 
 namespace CoolCompiler {
@@ -20,6 +21,17 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::vector<AST*> getFeatures() const;
         [[nodiscard]] std::string getInherits() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "CLASS [" << name << "]:["  << inherits << "][" << std::endl;
+
+            for(AST *ast : features)
+                ast->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

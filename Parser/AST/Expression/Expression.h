@@ -14,6 +14,7 @@ namespace CoolCompiler {
         explicit Expression(const std::string &identifier);
     public:
         Expression();
+        void print(int depth) override = 0;
     };
 
 } // CoolCompiler

@@ -19,6 +19,38 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getCondition() const;
         [[nodiscard]] AST* getConditionTrue() const;
         [[nodiscard]] AST* getConditionFalse() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "IF [" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "CONDITION [" << std::endl;
+
+            condition->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << "]" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "TRUE [" << std::endl;
+
+            conditionTrue->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << "]" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "FALSE [" << std::endl;
+
+            conditionFalse->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << "]" << std::endl;
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

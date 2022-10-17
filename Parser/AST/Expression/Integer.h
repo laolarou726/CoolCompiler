@@ -15,6 +15,11 @@ namespace CoolCompiler {
     public:
         explicit Integer(int value);
         [[nodiscard]] int getValue() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << value << std::endl;
+        }
     };
 
 } // CoolCompiler

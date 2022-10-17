@@ -17,6 +17,11 @@ namespace CoolCompiler {
         Formal(const std::string &name, const std::string &type);
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << name << " : " << type << std::endl;
+        }
     };
 
 } // CoolCompiler

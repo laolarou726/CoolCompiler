@@ -12,14 +12,30 @@ namespace CoolCompiler {
 
     class MathBinop : public Expression {
     private:
+        std::string token;
         TokenType operation;
         Expression* expressionLeft;
         Expression* expressionRight;
     public:
-        MathBinop(TokenType operation, Expression *expressionLeft, Expression *expressionRight);
+        MathBinop(const std::string &token, TokenType operation, Expression *expressionLeft, Expression *expressionRight);
         [[nodiscard]] TokenType getOperation() const;
         [[nodiscard]] Expression* getExpressionLeft() const;
         [[nodiscard]] Expression* getExpressionRight() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "MATH_BI[" << std::endl;
+
+            expressionLeft->print(depth + 1);
+
+            printTab(depth + 1);
+            std::cout << token << std::endl;
+
+            expressionRight->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

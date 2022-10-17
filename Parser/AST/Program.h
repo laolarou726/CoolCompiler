@@ -16,6 +16,17 @@ namespace CoolCompiler {
     public:
         explicit Program();
         [[nodiscard]] std::vector<AST*>* getClasses() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "PROGRAM [" << std::endl;
+
+            for(AST *ast : *classes)
+                ast->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

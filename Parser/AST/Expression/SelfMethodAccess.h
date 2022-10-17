@@ -18,6 +18,20 @@ namespace CoolCompiler {
         explicit SelfMethodAccess(const std::string &method, const std::vector<Expression*> &arguments);
         [[nodiscard]] std::string getMethod() const;
         [[nodiscard]] std::vector<Expression*> getArguments() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "SELF_METHOD_ACCESS [" << method << std::endl;
+
+            printTab(depth + 1);
+            std::cout << method << "(" << method << std::endl;
+
+            for(Expression *expr : arguments)
+                expr->print(depth + 1);
+
+            printTab(depth);
+            std::cout << ")]" << std::endl;
+        }
     };
 
 } // CoolCompiler

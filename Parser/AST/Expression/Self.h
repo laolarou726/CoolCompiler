@@ -12,6 +12,11 @@ namespace CoolCompiler {
     class Self : public Expression {
     public:
         Self();
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "[SELF]" << std::endl;
+        }
     };
 
 } // CoolCompiler

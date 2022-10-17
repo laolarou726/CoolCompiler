@@ -19,6 +19,13 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getExpression() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "CASE_ACTION [" << name << "]<"  << type << ">" << std::endl;
+
+            expression->print(depth + 1);
+        }
     };
 
 } // CoolCompiler

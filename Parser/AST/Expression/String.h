@@ -15,6 +15,11 @@ namespace CoolCompiler {
     public:
         explicit String(const std::string &value);
         [[nodiscard]] std::string getValue() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "[STRING " << value << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

@@ -15,6 +15,16 @@ namespace CoolCompiler {
     public:
         explicit Tilde(Expression *expression);
         [[nodiscard]] Expression* getExpression() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "TILDE [" << std::endl;
+
+            expression->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

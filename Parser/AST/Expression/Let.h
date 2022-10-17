@@ -19,6 +19,19 @@ namespace CoolCompiler {
         Let(const std::vector<InnerLet*> &parameters, Expression* expression);
         [[nodiscard]] std::vector<InnerLet*> getParameters() const;
         [[nodiscard]] Expression* getExpression() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "LET" << std::endl;
+
+            for(InnerLet *il : parameters)
+                il->print(depth + 1);
+
+            printTab(depth);
+            std::cout << "IN" << std::endl;
+
+            expression->print(depth + 1);
+        }
     };
 
 } // CoolCompiler

@@ -5,20 +5,22 @@
 #include "Comparison.h"
 
 namespace CoolCompiler {
-    Comparison::Comparison(const std::string &operation, const Expression &expressionLeft,
-                           const Expression &expressionRight) : Expression("comparison") {
-
+    Comparison::Comparison(const std::string &operation, Expression *expressionLeft, Expression *expressionRight)
+    : Expression("comparison") {
+        this->operation = operation;
+        this->expressionLeft = expressionLeft;
+        this->expressionRight = expressionRight;
     }
 
     std::string Comparison::getOperation() const {
         return operation;
     }
 
-    Expression Comparison::getExpressionLeft() const {
+    Expression* Comparison::getExpressionLeft() const {
         return expressionLeft;
     }
 
-    Expression Comparison::getExpressionRight() const {
+    Expression* Comparison::getExpressionRight() const {
         return expressionRight;
     }
 } // CoolCompiler

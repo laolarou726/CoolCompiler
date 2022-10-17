@@ -17,6 +17,27 @@ namespace CoolCompiler {
         While(Expression* condition, AST* body);
         [[nodiscard]] Expression* getCondition() const;
         [[nodiscard]] AST* getBody() const;
+
+        void print(int depth) override{
+            printTab(depth);
+            std::cout << "WHILE [" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "WHEN [" << std::endl;
+
+            condition->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << "]" << std::endl;
+
+            printTab(depth + 1);
+            std::cout << "DO [" << std::endl;
+
+            body->print(depth + 2);
+
+            printTab(depth + 1);
+            std::cout << "]" << std::endl;
+        }
     };
 
 } // CoolCompiler

@@ -13,13 +13,7 @@ int main() {
     p.parse();
 
     auto pt = p.getParseTree();
+    pt->print(0);
 
-    std::vector<CoolCompiler::AST*> tt;
-    auto* xx = new CoolCompiler::Class("123", tt, "123");
-    tt.emplace_back(xx);
-
-
-
-    std::cout << ((CoolCompiler::Class*)tt[0])->getName() << "Hello, World!" << std::endl;
     return 0;
 }
