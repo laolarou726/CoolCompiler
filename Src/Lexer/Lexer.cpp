@@ -24,14 +24,12 @@ namespace CoolCompiler {
     }
 
     bool Lexer::skipBlank() {
-        while (isspace(source[sourcePosition]) || source[sourcePosition] == '\n') {
+        while (isspace(source[sourcePosition])) {
             if (source[sourcePosition] == '\n') {
-                contextPosition++;
                 lineNumber++;
-            } else {
-                contextPosition++;
             }
 
+            contextPosition++;
             sourcePosition++;
 
             if (sourcePosition + 1 > source.length())
@@ -289,7 +287,10 @@ namespace CoolCompiler {
     void Lexer::doScan() {
         while (sourcePosition < source.length()) {
             if (skipBlank()) break;
-            if (!(isLiteral() || isSingleCharacterToken())) {
+            if (!(isLiteral() || isSingleCharacterToken())
+                && source[sourcePosition] != '\n'
+                && source[sourcePosition] != '\t'
+                && source[sourcePosition] != ' ') {
                 std::ostringstream messageStream;
                 messageStream
                         << "Syntax error -> " << lineNumber
@@ -310,6 +311,10 @@ namespace CoolCompiler {
 
     std::vector<Token> Lexer::getTokens() const {
         return tokens;
+    }
+
+    std::vector<Error> Lexer::getErrors() const {
+        return errors;
     }
 
 } // CoolCompiler

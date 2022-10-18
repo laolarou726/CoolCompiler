@@ -8,7 +8,7 @@
 #include <string>
 
 namespace StringUtils{
-    bool replace(std::string& str, const std::string& from, const std::string& to) {
+    inline bool replace(std::string& str, const std::string& from, const std::string& to) {
         size_t start_pos = str.find(from);
         if(start_pos == std::string::npos)
             return false;
@@ -16,7 +16,7 @@ namespace StringUtils{
         return true;
     }
 
-    void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    inline void replaceAll(std::string& str, const std::string& from, const std::string& to) {
         if(from.empty())
             return;
         size_t start_pos = 0;

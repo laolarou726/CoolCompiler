@@ -8,8 +8,8 @@
 
 namespace {
     TEST(StringUtilsTest, Replace){
-        //auto lexer = CoolCompiler::Lexer("Examples/hello_world.cl");
-        //lexer.doScan();
+        CoolCompiler::Lexer lexer = CoolCompiler::Lexer("Examples/hello_world.cl");
+        lexer.doScan();
 
         std::string testStr = "This is a test str test!";
 

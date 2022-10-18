@@ -58,6 +58,7 @@ namespace CoolCompiler {
 
         void doScan();
         [[nodiscard]] std::vector<Token> getTokens() const;
+        [[nodiscard]] std::vector<Error> getErrors() const;
     };
 
 } // CoolCompiler
