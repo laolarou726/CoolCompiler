@@ -67,6 +67,55 @@ namespace CoolCompiler {
             {'?', '\?'}
     };
 
+    std::unordered_map<TokenType, std::string> Token::tokenNames = {
+            {TokenType::STRING, "String"},
+            {TokenType::NUMBER, "Number"},
+            {TokenType::TYPE_ID, "Type Id"},
+            {TokenType::OBJ_ID, "Object Id"},
+            {TokenType::SELF, "Self"},
+            {TokenType::SELF_TYPE, "Self Type"},
+            {TokenType::LEFT_PAREN, "Left Paren '('"},
+            {TokenType::RIGHT_PAREN, "Right Paren ')'"},
+            {TokenType::LEFT_BRACE, "Left Brace '{'"},
+            {TokenType::RIGHT_BRACE, "Right Brace '}'"},
+            {TokenType::COMMA, "Comma ','"},
+            {TokenType::DOT, "Dot '.'"},
+            {TokenType::MINUS, "Minus '-'"},
+            {TokenType::PLUS, "Plus '+'"},
+            {TokenType::COLON, "Colon ':'"},
+            {TokenType::SEMICOLON, "Semi-Colon ';'"},
+            {TokenType::SLASH, "Slash '/'"},
+            {TokenType::STAR, "Star '*'"},
+            {TokenType::EQ, "Equal '='"},
+            {TokenType::LT, "Less Than '<'"},
+            {TokenType::GT, "Greater Than '>'"},
+            {TokenType::LTOE, "Less Than Or Equal '<='"},
+            {TokenType::GTOE, "Greater Than Or Equal '>='"},
+            {TokenType::ASSIGN, "Assign '<-'"},
+            {TokenType::TILDE, "Tilde '~'"},
+            {TokenType::AT, "At '@'"},
+            {TokenType::CLASS, "Class Keyword"},
+            {TokenType::ELSE, "Else Keyword"},
+            {TokenType::FALSE, "False Keyword"},
+            {TokenType::TRUE, "True Keyword"},
+            {TokenType::FI, "If End Keyword 'fi'"},
+            {TokenType::IF, "If Keyword"},
+            {TokenType::IN, "In Keyword"},
+            {TokenType::INHERITS, "Inherits Keyword"},
+            {TokenType::ISVOID, "Is Void Keyword"},
+            {TokenType::LET, "Let Keyword"},
+            {TokenType::LOOP, "Loop Keyword"},
+            {TokenType::POOL, "Loop End Keyword 'pool'"},
+            {TokenType::THEN, "Then Keyword"},
+            {TokenType::WHILE, "While Keyword"},
+            {TokenType::CASE, "Case Keyword"},
+            {TokenType::ESAC, "Case End Keyword 'esac'"},
+            {TokenType::NEW, "New Keyword"},
+            {TokenType::OF, "Of Keyword"},
+            {TokenType::NOT, "Not Keyword"},
+            {TokenType::E0F, "End Of File"}
+    };
+
     Token::Token() {
         this->tokenType = E0F;
         this->contextPosition = -1;

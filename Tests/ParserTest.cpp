@@ -10,12 +10,17 @@ namespace {
 
     void run(const std::string &name){
         std::ostringstream stream;
-        stream << "Examples/" << name << ".cl";
+        stream << "../Examples/" << name << ".cl";
 
         CoolCompiler::Lexer lexer = CoolCompiler::Lexer(stream.str());
         lexer.doScan();
 
         EXPECT_EQ(lexer.getErrors().size(), 0);
+
+        CoolCompiler::Parser parser = CoolCompiler::Parser(lexer.getTokens());
+        parser.parse();
+
+        EXPECT_EQ(parser.getErrors().size(), 0);
     }
 
     TEST(ParserTest, arith) {

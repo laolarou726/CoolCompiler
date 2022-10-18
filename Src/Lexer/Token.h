@@ -61,6 +61,7 @@ namespace CoolCompiler {
         static std::unordered_map<std::string, TokenType> singleCharacterTokens;
         static std::unordered_map<std::string, TokenType> keywords;
         static std::unordered_map<char, char> specialCharacters;
+        static std::unordered_map<TokenType, std::string> tokenNames;
     };
 
 } // CoolCompiler

@@ -1,6 +1,6 @@
 -- example of static and dynamic type differing for a dispatch
 
-Class Book inherits IO {
+class Book inherits IO {
     title : String;
     author : String;
 
@@ -21,7 +21,7 @@ Class Book inherits IO {
     };
 };
 
-Class Article inherits Book {
+class Article inherits Book {
     per_title : String;
 
     initArticle(title_p : String, author_p : String,
@@ -42,7 +42,7 @@ Class Article inherits Book {
     };
 };
 
-Class BookList inherits IO { 
+class BookList inherits IO {
     (* Since abort "returns" type Object, we have to add
        an expression of type Bool here to satisfy the typechecker.
        This code is unreachable, since abort() halts the program.
@@ -70,7 +70,7 @@ Class BookList inherits IO {
     print_list() : Object { abort() };
 };
 
-Class Cons inherits BookList {
+class Cons inherits BookList {
     xcar : Book;  -- We keep the car and cdr in attributes.
     xcdr : BookList; -- Because methods and features must have different names,
     -- we use xcar and xcdr for the attributes and reserve
@@ -101,14 +101,14 @@ Class Cons inherits BookList {
     };
 };
 
-Class Nil inherits BookList {
+class Nil inherits BookList {
     isNil() : Bool { true };
 
     print_list() : Object { true };
 };
 
 
-Class Main {
+class Main {
 
     books : BookList;
 

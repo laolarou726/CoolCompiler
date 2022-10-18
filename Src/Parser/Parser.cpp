@@ -58,9 +58,14 @@ namespace CoolCompiler {
 
         if(nextToken.getTokenType() != tokenType){
             std::ostringstream messageStream;
-            messageStream << "Expect " << tokenType << " but get " << nextToken.getTokenType();
+            messageStream << "Expect [ " << Token::tokenNames[tokenType] << " ] but get [ " << Token::tokenNames[nextToken.getTokenType()] << " ]";
 
             Fail(messageStream.str());
+
+            Error err = Error(nextToken.getContextPosition(), nextToken.getLineNumber(), messageStream.str());
+
+            errors.emplace_back(err);
+
             return {};
         }
 
@@ -83,6 +88,10 @@ namespace CoolCompiler {
 
     Program* Parser::getParseTree() const {
         return parseTree;
+    }
+
+    std::vector<Error> Parser::getErrors() const {
+        return errors;
     }
 
     // AST Resolver

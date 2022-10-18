@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include "Lexer.h"
+#include "../Utils/StringUtils.h"
 
 namespace CoolCompiler {
     Lexer::Lexer(const std::string &filePath) {
@@ -140,10 +141,12 @@ namespace CoolCompiler {
                     break;
             }
 
-            if (isSelf(lexeme))
-                addToken(TokenType::SELF, lexeme);
-            else if (isKeyword(lexeme))
-                addToken(Token::keywords[lexeme], lexeme);
+            std::string lowerLexeme = StringUtils::toLower(lexeme);
+
+            if (isSelf(lowerLexeme))
+                addToken(TokenType::SELF, lowerLexeme);
+            else if (isKeyword(lowerLexeme))
+                addToken(Token::keywords[lowerLexeme], lowerLexeme);
             else
                 addToken(TokenType::OBJ_ID, lexeme);
 
@@ -287,10 +290,7 @@ namespace CoolCompiler {
     void Lexer::doScan() {
         while (sourcePosition < source.length()) {
             if (skipBlank()) break;
-            if (!(isLiteral() || isSingleCharacterToken())
-                && source[sourcePosition] != '\n'
-                && source[sourcePosition] != '\t'
-                && source[sourcePosition] != ' ') {
+            if (!(isLiteral() || isSingleCharacterToken()) && !isspace(source[sourcePosition])) {
                 std::ostringstream messageStream;
                 messageStream
                         << "Syntax error -> " << lineNumber

@@ -6,18 +6,21 @@
 #define COOLCOMPILER_PARSER_H
 
 #include <vector>
-#include "../Lexer/Token.h"
 #include "AST/AST.h"
 #include "AST/Class.h"
 #include "AST/Expression/Expression.h"
 #include "AST/Formal.h"
 #include "AST/Program.h"
+#include "../Lexer/Error.h"
+#include "../Lexer/Token.h"
 
 namespace CoolCompiler {
 
     class Parser {
     private:
         std::vector<Token> tokens;
+        std::vector<Error> errors;
+
         int position;
         Token currentToken;
         Program* parseTree;
@@ -75,6 +78,7 @@ namespace CoolCompiler {
         explicit Parser(const std::vector<Token> &tokens);
         void parse();
         [[nodiscard]] Program* getParseTree() const;
+        [[nodiscard]] std::vector<Error> getErrors() const;
     };
 
 } // CoolCompiler

@@ -29,4 +29,18 @@ namespace {
         StringUtils::replaceAll(testStr, "TEST", "XXXX");
         EXPECT_EQ(testStr, "This is a XXXX str XXXX!");
     }
+
+    TEST(StringUtilsTest, toLower){
+        std::string testStr = "TEST!";
+        std::string result = StringUtils::toLower(testStr);
+
+        EXPECT_EQ(result, "test!");
+    }
+
+    TEST(StringUtilsTest, toUpper){
+        std::string testStr = "test!";
+        std::string result = StringUtils::toUpper(testStr);
+
+        EXPECT_EQ(result, "TEST!");
+    }
 }

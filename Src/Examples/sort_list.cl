@@ -21,7 +21,7 @@ Because the sort used is a quadratic space insertion sort, sorting
 moderately large lists will cause spim to run out of memory.
 *)
 
-Class List inherits IO { 
+class List inherits IO {
         (* Since abort() returns Object, we need something of
 	   type Bool at the end of the block to satisfy the typechecker. 
            This code is unreachable, since abort() halts the program. *)
@@ -53,7 +53,7 @@ Class List inherits IO {
 	print_list() : Object { abort() };
 };
 
-Class Cons inherits List {
+class Cons inherits List {
 	xcar : Int;  -- We keep the car in cdr in attributes.
 	xcdr : List; -- Because methods and features must have different names,
 		     -- we use xcar and xcdr for the attributes and reserve
@@ -97,7 +97,7 @@ Class Cons inherits List {
 	};
 };
 
-Class Nil inherits List {
+class Nil inherits List {
 	isNil() : Bool { true };
 
         rev() : List { self };
@@ -113,7 +113,7 @@ Class Nil inherits List {
 };
 
 
-Class Main inherits IO {
+class Main inherits IO {
 
 	l : List;
 
