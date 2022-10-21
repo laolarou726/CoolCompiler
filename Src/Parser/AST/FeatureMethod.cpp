@@ -6,6 +6,12 @@
 
 namespace CoolCompiler {
 
+    FeatureMethod::FeatureMethod(const std::string &name, const std::string &returnType, Expression *expression) {
+        this->name = name;
+        this->returnType = returnType;
+        this->expression = expression;
+    }
+
     CoolCompiler::FeatureMethod::FeatureMethod(const std::string &name,
                                                const std::string &returnType,
                                                Expression* expression,

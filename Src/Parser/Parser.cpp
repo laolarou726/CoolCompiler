@@ -33,6 +33,7 @@
 #include "AST/Expression/Integer.h"
 #include "AST/Expression/String.h"
 #include "AST/Expression/Boolean.h"
+#include "../Dependencies/fmt/include/fmt/core.h"
 
 namespace CoolCompiler {
     Parser::Parser(const std::vector<Token> &tokens) {
@@ -57,12 +58,12 @@ namespace CoolCompiler {
         Token nextToken = next();
 
         if(nextToken.getTokenType() != tokenType){
-            std::ostringstream messageStream;
-            messageStream << "Expect [ " << Token::tokenNames[tokenType] << " ] but get [ " << Token::tokenNames[nextToken.getTokenType()] << " ]";
+            std::string message = fmt::format("Expect [ {} ] but get [ {} ]",
+                                              Token::tokenNames[tokenType],
+                                              Token::tokenNames[nextToken.getTokenType()]);
+            Fail(message);
 
-            Fail(messageStream.str());
-
-            Error err = Error(nextToken.getContextPosition(), nextToken.getLineNumber(), messageStream.str());
+            Error err = Error(nextToken.getContextPosition(), nextToken.getLineNumber(), message);
 
             errors.emplace_back(err);
 

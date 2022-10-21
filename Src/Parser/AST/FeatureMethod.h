@@ -19,6 +19,7 @@ namespace CoolCompiler {
         Expression* expression;
         std::vector<Formal*> formalArguments;
     public:
+        FeatureMethod(const std::string &name, const std::string &returnType, Expression* expression);
         FeatureMethod(const std::string &name, const std::string &returnType,
                       Expression* expression, const std::vector<Formal*> &formalArguments);
         [[nodiscard]] std::string getName() const;
