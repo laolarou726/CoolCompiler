@@ -46,7 +46,7 @@ namespace CoolCompiler {
         PROGRAM();
     }
 
-    void Parser::Fail(const std::string &errorMessage = "") {
+    void Parser::fail(const std::string &errorMessage = "") {
         std::string err = errorMessage.empty() ? "Syntax error" : errorMessage;
         std::cout
             << "Syntax error : " << errorMessage << std::endl
@@ -61,7 +61,7 @@ namespace CoolCompiler {
             std::string message = fmt::format("Expect [ {} ] but get [ {} ]",
                                               Token::tokenNames[tokenType],
                                               Token::tokenNames[nextToken.getTokenType()]);
-            Fail(message);
+            fail(message);
 
             Error err = Error(nextToken.getContextPosition(), nextToken.getLineNumber(), message);
 

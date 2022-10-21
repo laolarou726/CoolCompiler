@@ -25,7 +25,7 @@ namespace CoolCompiler {
         Token currentToken;
         Program* parseTree;
 
-        void Fail(const std::string &errorMessage);
+        void fail(const std::string &errorMessage);
         Token expect(TokenType tokenType, const std::string &errorMessage = "");
         Token next(int step = 1);
         bool hasNext();
