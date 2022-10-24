@@ -14,10 +14,12 @@ namespace CoolCompiler {
 
     class SemanticAnalyzer {
     private:
-        std::vector<Error> errors;
-
+        int errorCount;
+        std::string currentClassName;
         Program* program = nullptr;
         std::unordered_map<std::string, Class*> classLookups;
+        std::unordered_map<std::string, std::vector<std::string>> inheritances;
+        std::unordered_map<std::string, std::string> inheritanceParents;
 
         Class* OBJECT_CLASS;
         Class* IO_CLASS;
@@ -27,17 +29,23 @@ namespace CoolCompiler {
 
         SemanticAnalyzer();
 
+        void fail(const std::string &message);
+
         bool resolveDefinedClasses();
         bool buildInheritanceGraph();
+        bool graphDFS(std::unordered_map<std::string, int> &visitHistory, const std::string &type);
         bool isGraphAcyclic();
         bool isValid();
-        bool isSubtype(const std::string &type1, const std::string &type2);
+        bool isSubtype(const std::string &candidate, const std::string &target);
         bool isTypeDefined(const std::string &type);
         bool isPrimitive(const std::string &type);
+
+        std::string leastCommonAncestorType(const std::string &lhs, const std::string &rhs);
+        std::string getParentType(const std::string &type);
     public:
         explicit SemanticAnalyzer(Program* program);
         void doCheck();
-        std::vector<Error> getErrors() const;
+        int getErrorCount() const;
     };
 
 } // CoolCompiler

@@ -2,9 +2,11 @@
 // Created by luoli on 2022/10/20.
 //
 
+#include <set>
 #include "SemanticAnalyzer.h"
 #include "../Parser/AST/FeatureMethod.h"
 #include "../Parser/AST/FeatureAttribute.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
@@ -75,38 +77,189 @@ namespace CoolCompiler {
     }
 
     bool SemanticAnalyzer::resolveDefinedClasses() {
-        return false;
+        for(AST* ast : *program->getClasses()){
+            if(ast->getIdentifier() != "class") continue;
+
+            auto* class_ = (Class*) ast;
+            std::string className = class_->getName();
+
+            if(className == OBJECT_CLASS->getName() ||
+                className == INT_CLASS->getName() ||
+                className == BOOL_CLASS->getName() ||
+                className == STRING_CLASS->getName() ||
+                className == "SELF_TYPE"){
+                std::string message = fmt::format("Redefinition of {} is not allowed.", className);
+                fail(message);
+
+                return false;
+            }
+
+            if(isTypeDefined(className)){
+                std::string message = fmt::format("Class {} is already", className);
+                fail(message);
+
+                return false;
+            }
+
+            classLookups[className] = class_;
+
+            return true;
+        }
     }
 
     bool SemanticAnalyzer::buildInheritanceGraph() {
-        return false;
+        for(auto [className, class_] : classLookups){
+            if(className == OBJECT_CLASS->getName()) continue;
+
+            std::string inheritFrom = class_->getInherits();
+
+            inheritanceParents[className] = inheritFrom;
+
+            if(inheritFrom == STRING_CLASS->getName() ||
+                inheritFrom == INT_CLASS->getName() ||
+                inheritFrom == BOOL_CLASS->getName() ||
+                inheritFrom == "SELF_TYPE"){
+                std::string message = fmt::format("Class {} cannot inherit class {}.", className, inheritFrom);
+                fail(message);
+
+                return false;
+            }
+
+            if(isTypeDefined(inheritFrom)){
+                std::string message = fmt::format("Class {} inherits from an undefined class {}.", className, inheritFrom);
+                fail(message);
+
+                return false;
+            }
+
+            if(inheritances.find(inheritFrom) == inheritances.end())
+                inheritances[inheritFrom] = std::vector<std::string>();
+
+            inheritances[inheritFrom].emplace_back(className);
+        }
+
+        return true;
+    }
+
+    bool SemanticAnalyzer::graphDFS(std::unordered_map<std::string, int> &visitHistory, const std::string &type) {
+        visitHistory[type] = 0;
+
+        for(auto [className, _] : inheritances){
+            if(visitHistory[className] == 0){
+                std::string message =
+                        fmt::format("There exists an (in)direct circular dependency between: {} and {}",
+                                    type, className);
+                fail(message);
+
+                return false;
+            }
+            else{
+                if(!graphDFS(visitHistory, className)) return false;
+            }
+        }
+
+        visitHistory[type] = 1;
+        return true;
     }
 
     bool SemanticAnalyzer::isGraphAcyclic() {
-        return false;
+        std::unordered_map<std::string, int> visitHistory;
+
+        for(auto [className, _] : classLookups)
+            visitHistory[className] = 2;
+
+        for(auto [className, _] : classLookups){
+            if(visitHistory[className] == 2)
+                if(!graphDFS(visitHistory, className))
+                    return false;
+        }
+
+        return true;
     }
 
     bool SemanticAnalyzer::isValid() {
-        return false;
+        if(!isGraphAcyclic()) return false;
+        if(!isTypeDefined("Main")){
+            fail("Class Main is not defined.");
+            return false;
+        }
+
+        return true;
     }
 
-    bool SemanticAnalyzer::isSubtype(const std::string &type1, const std::string &type2) {
-        return false;
+    bool SemanticAnalyzer::isSubtype(const std::string &candidate, const std::string &target) {
+        if(candidate == "_no_type") return true;
+
+        bool isCurrentClass = false;
+
+        if(candidate == "SELF_TYPE"){
+            if(target == "SELF_TYPE")
+                return true;
+
+            isCurrentClass = true;
+        }
+
+        std::string current = isCurrentClass ? currentClassName : candidate;
+
+        while(current != OBJECT_CLASS->getName() && current != target)
+            current = inheritanceParents[current];
+
+        return current == target;
     }
 
     bool SemanticAnalyzer::isTypeDefined(const std::string &type) {
-        return false;
+        return classLookups.find(type) != classLookups.end();
     }
 
     bool SemanticAnalyzer::isPrimitive(const std::string &type) {
-        return false;
+        return type == OBJECT_CLASS->getName() ||
+                type == IO_CLASS->getName() ||
+                type == INT_CLASS->getName() ||
+                type == BOOL_CLASS->getName() ||
+                type == STRING_CLASS->getName();
+    }
+
+    std::string SemanticAnalyzer::leastCommonAncestorType(const std::string &lhs, const std::string &rhs) {
+        bool isLeftSelfType = lhs == "SELF_TYPE";
+        bool isRightSelfType = rhs == "SELF_TYPE";
+
+        std::string currentLhs = isLeftSelfType ? currentClassName : lhs;
+        std::string currentRhs = isRightSelfType ? currentClassName : lhs;
+        std::set<std::string> rhsAncestors;
+
+        while(currentRhs != OBJECT_CLASS->getName()){
+            rhsAncestors.emplace(currentRhs);
+            currentRhs = inheritanceParents[currentRhs];
+        }
+
+        while(currentLhs != OBJECT_CLASS->getName()){
+            if(rhsAncestors.find(currentLhs) != rhsAncestors.end())
+                return currentLhs;
+
+            currentLhs = inheritanceParents[currentLhs];
+        }
+
+        return OBJECT_CLASS->getName();
+    }
+
+    std::string SemanticAnalyzer::getParentType(const std::string &type) {
+        if(inheritanceParents.find(type) == inheritanceParents.end())
+            return "_no_type";
+
+        return inheritanceParents[type];
     }
 
     void SemanticAnalyzer::doCheck() {
 
     }
 
-    std::vector<Error> SemanticAnalyzer::getErrors() const {
-        return errors;
+    void SemanticAnalyzer::fail(const std::string &message) {
+        errorCount++;
+        std::cerr << message << std::endl;
     }
+
+    int SemanticAnalyzer::getErrorCount() const {
+        return errorCount;
+    }
+
 } // CoolCompiler
