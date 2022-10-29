@@ -9,5 +9,5 @@ Stanford CS1/CS143 Compilers Course Project - Cool compiler
 |  Lexer          |  ✅     |
 |  Parser         |  ✅     |
 |Semantic Analysis| WIP |
-|   Optimization  | Pending |
+|   Optimization  | Skipped |
 |Code Generation  | Pending |
