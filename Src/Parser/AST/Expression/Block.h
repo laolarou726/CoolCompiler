@@ -17,6 +17,15 @@ namespace CoolCompiler {
         explicit Block(const std::vector<Expression*> &expressions);
         [[nodiscard]] std::vector<Expression*> getExpressions() const;
 
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            std::string result = "Object";
+
+            for(auto* expr : expressions)
+                result = expr->typeCheck(analyzer);
+
+            return result;
+        }
+
         void print(int depth) override{
             printTab(depth);
             std::cout << "BLOCK [" << std::endl;

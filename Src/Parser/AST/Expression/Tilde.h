@@ -6,6 +6,7 @@
 #define COOLCOMPILER_TILDE_H
 
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
@@ -15,6 +16,18 @@ namespace CoolCompiler {
     public:
         explicit Tilde(Expression *expression);
         [[nodiscard]] Expression* getExpression() const;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            std::string type = expression->typeCheck(analyzer);
+
+            if(type != "Int"){
+                std::string message = fmt::format("{}: Argument of the operator '~' has type <{}> instead of Int.",
+                                                  "Tilde", type);
+                return "Object";
+            }
+
+            return "Int";
+        }
 
         void print(int depth) override{
             printTab(depth);

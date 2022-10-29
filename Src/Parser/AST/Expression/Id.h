@@ -17,6 +17,10 @@ namespace CoolCompiler {
         explicit Id(const std::string &name);
         [[nodiscard]] std::string getName() const;
 
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            return "String";
+        }
+
         void print(int depth) override{
             printTab(depth);
             std::cout << name << std::endl;

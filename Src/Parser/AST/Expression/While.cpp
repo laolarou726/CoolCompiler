@@ -5,7 +5,7 @@
 #include "While.h"
 
 namespace CoolCompiler {
-    While::While(Expression* condition, AST* body) : Expression("while") {
+    While::While(Expression* condition, Expression* body) : Expression("while") {
         this->condition = condition;
         this->body = body;
     }
@@ -14,7 +14,7 @@ namespace CoolCompiler {
         return condition;
     }
 
-    AST* While::getBody() const {
+    Expression* While::getBody() const {
         return body;
     }
 } // CoolCompiler

@@ -6,6 +6,7 @@
 #define COOLCOMPILER_NEW_H
 
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
@@ -15,6 +16,18 @@ namespace CoolCompiler {
     public:
         explicit New(const std::string &type);
         [[nodiscard]] std::string getType() const;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            if(type != "SELF_TYPE" && !analyzer->isTypeDefined(type)){
+                std::string message = fmt::format("{}: Tried to instantiate an object of undefined type: {}.",
+                                                  "New", type);
+                analyzer->fail(message);
+
+                return "Object";
+            }
+
+            return type;
+        }
 
         void print(int depth) override{
             printTab(depth);

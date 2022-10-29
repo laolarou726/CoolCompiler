@@ -5,7 +5,7 @@
 #include "If.h"
 
 namespace CoolCompiler {
-    If::If(Expression* condition, AST* conditionTrue, AST* conditionFalse) : Expression("if") {
+    If::If(Expression* condition, Expression* conditionTrue, Expression* conditionFalse) : Expression("if") {
         this->condition = condition;
         this->conditionTrue = conditionTrue;
         this->conditionFalse = conditionFalse;
@@ -15,11 +15,11 @@ namespace CoolCompiler {
         return condition;
     }
 
-    AST* If::getConditionTrue() const {
+    Expression* If::getConditionTrue() const {
         return conditionTrue;
     }
 
-    AST* If::getConditionFalse() const {
+    Expression* If::getConditionFalse() const {
         return conditionFalse;
     }
 } // CoolCompiler

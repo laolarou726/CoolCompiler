@@ -13,6 +13,10 @@ namespace CoolCompiler {
     public:
         Self();
 
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            return "Self";
+        }
+
         void print(int depth) override{
             printTab(depth);
             std::cout << "[SELF]" << std::endl;

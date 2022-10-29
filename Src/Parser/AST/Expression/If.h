@@ -6,19 +6,35 @@
 #define COOLCOMPILER_IF_H
 
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
     class If : public Expression {
     private:
         Expression* condition;
-        AST* conditionTrue;
-        AST* conditionFalse;
+        Expression* conditionTrue;
+        Expression* conditionFalse;
     public:
-        If(Expression* condition, AST* conditionTrue, AST* conditionFalse);
+        If(Expression* condition, Expression* conditionTrue, Expression* conditionFalse);
         [[nodiscard]] Expression* getCondition() const;
-        [[nodiscard]] AST* getConditionTrue() const;
-        [[nodiscard]] AST* getConditionFalse() const;
+        [[nodiscard]] Expression* getConditionTrue() const;
+        [[nodiscard]] Expression* getConditionFalse() const;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            std::string conditionType = condition->typeCheck(analyzer);
+            std::string trueType = conditionTrue->typeCheck(analyzer);
+            std::string falseType = conditionFalse->typeCheck(analyzer);
+
+            if(conditionType != "Bool"){
+                std::string message = fmt::format("{}: Expected the condition of if to be of type <Bool> but got the predicate of type <{}> instead.",
+                                                  "If", conditionType);
+                analyzer->fail(message);
+            }
+
+            std::string result = analyzer->leastCommonAncestorType(trueType, falseType);
+            return result;
+        }
 
         void print(int depth) override{
             printTab(depth);

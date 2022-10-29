@@ -6,17 +6,31 @@
 #define COOLCOMPILER_WHILE_H
 
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
     class While : public Expression {
     private:
         Expression* condition;
-        AST* body;
+        Expression* body;
     public:
-        While(Expression* condition, AST* body);
+        While(Expression* condition, Expression* body);
         [[nodiscard]] Expression* getCondition() const;
-        [[nodiscard]] AST* getBody() const;
+        [[nodiscard]] Expression* getBody() const;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            std::string conditionType = condition->typeCheck(analyzer);
+            body->typeCheck(analyzer);
+
+            if(conditionType != "Bool"){
+                std::string message = fmt::format("{}: Expected the condition of while to be of type <Bool> but got the predicate of type <{}> instead.",
+                                                  "While", conditionType);
+                analyzer->fail(message);
+            }
+
+            return "Object";
+        }
 
         void print(int depth) override{
             printTab(depth);

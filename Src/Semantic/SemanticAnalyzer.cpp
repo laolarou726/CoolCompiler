@@ -76,6 +76,8 @@ namespace CoolCompiler {
         this->program = program;
     }
 
+    //CLASS CHECKS
+
     bool SemanticAnalyzer::resolveDefinedClasses() {
         for(AST* ast : *program->getClasses()){
             if(ast->getIdentifier() != "class") continue;
@@ -219,6 +221,27 @@ namespace CoolCompiler {
                 type == STRING_CLASS->getName();
     }
 
+    void SemanticAnalyzer::ensureAttributesUnique(Class *class_) {
+        std::set<std::string> attrNamesMap;
+        std::string name = class_->getName();
+
+        for(auto* feature : class_->getFeatures()){
+            if(typeid(feature) == typeid(FeatureMethod)) continue;
+
+            auto* featureAttr = (FeatureAttribute*) feature;
+            std::string attrName = featureAttr->getName();
+
+            if(attrNamesMap.find(attrName) != attrNamesMap.end()){
+                std::string message = fmt::format("{}: The attribute [{}] has already been defined!",
+                                                  name, attrName);
+                fail(message);
+                continue;
+            }
+
+            attrNamesMap.emplace(attrName);
+        }
+    }
+
     std::string SemanticAnalyzer::leastCommonAncestorType(const std::string &lhs, const std::string &rhs) {
         bool isLeftSelfType = lhs == "SELF_TYPE";
         bool isRightSelfType = rhs == "SELF_TYPE";
@@ -260,6 +283,153 @@ namespace CoolCompiler {
 
     int SemanticAnalyzer::getErrorCount() const {
         return errorCount;
+    }
+
+    //TYPE CHECKS
+
+    void SemanticAnalyzer::buildAttributeScopes(const Class *class_) {
+        objectsTable->enter();
+
+        for(auto* feature : class_->getFeatures()){
+            if(typeid(feature) == typeid(FeatureMethod)) continue;
+
+            auto* attr = (FeatureAttribute*) feature;
+            auto type = attr->getType();
+
+            objectsTable->add(attr->getName(), &type);
+        }
+
+        if(class_->getName() == OBJECT_CLASS->getName()) return;
+
+        std::string inheritsRaw = class_->getInherits().empty() ? OBJECT_CLASS->getName() : class_->getInherits();
+        std::string inherits = getParentType(inheritsRaw);
+        Class* superClass = classLookups[inherits];
+
+        buildAttributeScopes(superClass);
+    }
+
+    void SemanticAnalyzer::processAttribute(Class *class_, FeatureAttribute *attr) {
+        bool isInheritAttr = false;
+
+        for(AST* feature : class_->getFeatures()){
+            if(typeid(feature) == typeid(FeatureMethod)) continue;
+
+            auto* innerAttr = (FeatureAttribute*) feature;
+
+            if(innerAttr->getName() == innerAttr->getName()) isInheritAttr = true;
+        }
+
+        if(isInheritAttr){
+            fail(fmt::format("{}'s attribute {} is an attribute of an inherited class.",
+                             currentClassName, attr->getName()));
+        }
+
+        std::string inheritType = getParentType(class_->getName());
+        if(inheritType == "_no_type") return;
+
+        Class* superClassDef = classLookups[inheritType];
+        processAttribute(superClassDef, attr);
+    }
+
+    void SemanticAnalyzer::processMethod(Class *class_, FeatureMethod *method, FeatureMethod *parentMethod) {
+        if(parentMethod == nullptr) return;
+
+        std::vector<Formal*> methodFormals = method->getFormalArguments();
+        std::vector<Formal*> parentMethodFormals = parentMethod->getFormalArguments();
+
+        if(method->getReturnType() != parentMethod->getReturnType()){
+            std::string message = fmt::format("{}: In redefined method {}<{}> differs from the ancestor method return type {}<{}>",
+                                              class_->getName(), method->getName(), method->getReturnType(),
+                                              parentMethod->getName(), parentMethod->getReturnType());
+            fail(message);
+        }
+
+        int currentIndex = 0;
+        while(currentIndex < methodFormals.size() &&
+                currentIndex < parentMethodFormals.size()){
+            Formal* methodArg = methodFormals[currentIndex];
+            Formal* parentMethodArg = parentMethodFormals[currentIndex];
+
+            if(methodArg->getType() != parentMethodArg->getType()){
+                std::string message = fmt::format("{}: In redefined method {}, the return type of argument [{}]<{}> differs from the corresponding ancestor method argument return type [{}]<{}>.",
+                                                  class_->getName(), method->getName(), methodArg->getName(), methodArg->getType(),
+                                                  parentMethodArg->getName(), parentMethodArg->getType());
+                fail(message);
+            }
+
+            currentIndex++;
+        }
+
+        std::string parentClassType = getParentType(class_->getName());
+
+        if(parentClassType == "_no_type")
+            return;
+
+        Class* newParentClass = classLookups[parentClassType];
+        FeatureMethod* newParentMethod = nullptr;
+
+        for(auto* feature : newParentClass->getFeatures()){
+            if(typeid(feature) == typeid(FeatureAttribute)) continue;
+
+            auto* featureMethod = (FeatureMethod*) feature;
+
+            if(featureMethod->getName() == method->getName()){
+                newParentMethod = featureMethod;
+                break;
+            }
+        }
+
+        processMethod(newParentClass, method, newParentMethod);
+    }
+
+    void SemanticAnalyzer::typeCheck(Class *class_) {
+        currentClassName = class_->getName();
+
+        ensureAttributesUnique(class_);
+
+        objectsTable = new SymbolTable<std::string, std::string>();
+        objectsTable->enter();
+        objectsTable->add("self", &currentClassName);
+
+        buildAttributeScopes(class_);
+
+        for(auto* feature : class_->getFeatures()){
+            if(typeid(feature) == typeid(FeatureMethod)){
+                auto* featureMethod = (FeatureMethod*) feature;
+                processMethod(class_, featureMethod, featureMethod);
+            }
+
+            if(typeid(feature) == typeid(FeatureAttribute)){
+                std::string parentType = getParentType(currentClassName);
+                processAttribute(classLookups[parentType], (FeatureAttribute*) feature);
+            }
+        }
+
+        for(auto* feature : class_->getFeatures()){
+            if(typeid(feature) == typeid(FeatureMethod)){
+                auto* featureMethod = (FeatureMethod*) feature;
+                check(featureMethod);
+            }
+
+            if(typeid(feature) == typeid(FeatureAttribute)){
+                auto* featureAttr = (FeatureAttribute*) feature;
+                check(featureAttr);
+            }
+        }
+
+        objectsTable->exit();
+    }
+
+    std::string SemanticAnalyzer::check(FeatureAttribute *attr) {
+        auto* initExpr = attr->getInit();
+    }
+
+    std::string SemanticAnalyzer::check(FeatureMethod *method) {
+
+    }
+
+    SymbolTable<std::string, std::string> *SemanticAnalyzer::getObjectsTable() const {
+        return objectsTable;
     }
 
 } // CoolCompiler

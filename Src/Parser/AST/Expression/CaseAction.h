@@ -20,6 +20,22 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getExpression() const;
 
+        std::string typeCheck(SemanticAnalyzer* analyzer) override{
+            if(type == "Self")
+                analyzer->fail("'self' cannot be bound in a 'branch' expression.");
+
+            auto* objectsTable = analyzer->getObjectsTable();
+
+            objectsTable->enter();
+            objectsTable->add(name, &type);
+
+            std::string caseActionExprType = expression->typeCheck(analyzer);
+
+            objectsTable->exit();
+
+            return caseActionExprType;
+        }
+
         void print(int depth) override{
             printTab(depth);
             std::cout << "CASE_ACTION [" << name << "]<"  << type << ">" << std::endl;

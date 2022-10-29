@@ -6,6 +6,7 @@
 #define COOLCOMPILER_EXPRESSION_H
 
 #include "../AST.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
 
@@ -15,6 +16,7 @@ namespace CoolCompiler {
     public:
         Expression();
         void print(int depth) override = 0;
+        virtual std::string typeCheck(SemanticAnalyzer* analyzer) = 0;
     };
 
 } // CoolCompiler

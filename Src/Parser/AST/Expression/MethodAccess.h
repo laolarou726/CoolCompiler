@@ -20,6 +20,7 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getInstance() const;
         [[nodiscard]] std::string getMethod() const;
         [[nodiscard]] std::vector<Expression*> getArguments() const;
+        std::string typeCheck() override;
 
         void print(int depth) override{
             printTab(depth);
