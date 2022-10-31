@@ -12,7 +12,7 @@ namespace CoolCompiler {
 
     SemanticAnalyzer::SemanticAnalyzer() {
         //OBJECT CLASS
-        std::vector<AST*> objectFeatures;
+        std::vector<FeatureBase*> objectFeatures;
         objectFeatures.emplace_back(new FeatureMethod("abort", "Object", nullptr));
         objectFeatures.emplace_back(new FeatureMethod("type_name", "String", nullptr));
         objectFeatures.emplace_back(new FeatureMethod("copy", "SELF_TYPE", nullptr));
@@ -20,7 +20,7 @@ namespace CoolCompiler {
         OBJECT_CLASS = new Class("Object", objectFeatures, "");
 
         //IO CLASS
-        std::vector<AST*> ioFeatures;
+        std::vector<FeatureBase*> ioFeatures;
 
         std::vector<Formal*> outStringArguments;
         outStringArguments.emplace_back(new Formal("arg", "String"));
@@ -36,19 +36,19 @@ namespace CoolCompiler {
         IO_CLASS = new Class("IO", ioFeatures, OBJECT_CLASS->getName());
 
         //INT CLASS
-        std::vector<AST*> intFeatures;
+        std::vector<FeatureBase*> intFeatures;
         intFeatures.emplace_back(new FeatureAttribute("val", "Int"));
 
         INT_CLASS = new Class("Int", intFeatures, OBJECT_CLASS->getName());
 
         //BOOL CLASS
-        std::vector<AST*> boolFeatures;
+        std::vector<FeatureBase*> boolFeatures;
         boolFeatures.emplace_back(new FeatureAttribute("val", "_prim_slot"));
 
         BOOL_CLASS = new Class("Bool", boolFeatures, OBJECT_CLASS->getName());
 
         //STRING CLASS
-        std::vector<AST*> stringFeatures;
+        std::vector<FeatureBase*> stringFeatures;
         stringFeatures.emplace_back(new FeatureAttribute("val", INT_CLASS->getName()));
         stringFeatures.emplace_back(new FeatureAttribute("str_field", "_prim_slot"));
         stringFeatures.emplace_back(new FeatureMethod("length", INT_CLASS->getName(), nullptr));

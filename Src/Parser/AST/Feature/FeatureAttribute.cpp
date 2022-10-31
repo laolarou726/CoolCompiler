@@ -4,6 +4,7 @@
 
 #include "FeatureAttribute.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
     FeatureAttribute::FeatureAttribute(const std::string &name, const std::string &type) : FeatureBase("feature_attr"){

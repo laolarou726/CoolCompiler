@@ -5,6 +5,7 @@
 #include <set>
 #include "FeatureMethod.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 

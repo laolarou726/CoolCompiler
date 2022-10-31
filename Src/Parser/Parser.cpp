@@ -118,7 +118,7 @@ namespace CoolCompiler {
         }
         expect(LEFT_BRACE);
 
-        std::vector<AST*> features;
+        std::vector<FeatureBase*> features;
         while(peek().getTokenType() != RIGHT_BRACE && peek(2).getTokenType() != SEMICOLON){
             FEATURE(features);
             expect(SEMICOLON);
@@ -128,7 +128,7 @@ namespace CoolCompiler {
         container.emplace_back(new Class(typeId.getLexeme(), features, inheritType.getLexeme()));
     }
 
-    void Parser::FEATURE_ATTR(const Token &objId, std::vector<AST*> &container) {
+    void Parser::FEATURE_ATTR(const Token &objId, std::vector<FeatureBase*> &container) {
         Token typeId = expect(TYPE_ID);
         std::vector<Expression*> expressions;
 
@@ -142,7 +142,7 @@ namespace CoolCompiler {
         container.emplace_back(new FeatureAttribute(objId.getLexeme(), typeId.getLexeme()));
     }
 
-    void Parser::FEATURE_METHOD(const Token &objId, std::vector<AST*> &container) {
+    void Parser::FEATURE_METHOD(const Token &objId, std::vector<FeatureBase*> &container) {
         std::vector<Formal*> formals;
 
         if(peek().getTokenType() != RIGHT_PAREN){
@@ -179,7 +179,7 @@ namespace CoolCompiler {
                               formals));
     }
 
-    void Parser::FEATURE(std::vector<AST*> &container) {
+    void Parser::FEATURE(std::vector<FeatureBase*> &container) {
         Token objId = expect(OBJ_ID);
 
         if(peek().getTokenType() == LEFT_PAREN){

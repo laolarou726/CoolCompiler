@@ -10,7 +10,6 @@
 #include "../Formal.h"
 #include "../Expression/Expression.h"
 #include "FeatureBase.h"
-#include "fmt/format.h"
 
 namespace CoolCompiler {
 

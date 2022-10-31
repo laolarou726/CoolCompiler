@@ -35,9 +35,9 @@ namespace CoolCompiler {
 
         void PROGRAM();
         void CLASS(std::vector<AST*> &container);
-        void FEATURE_ATTR(const Token &objId, std::vector<AST*> &container);
-        void FEATURE_METHOD(const Token &objId, std::vector<AST*> &container);
-        void FEATURE(std::vector<AST*> &container);
+        void FEATURE_ATTR(const Token &objId, std::vector<FeatureBase*> &container);
+        void FEATURE_METHOD(const Token &objId, std::vector<FeatureBase*> &container);
+        void FEATURE(std::vector<FeatureBase*> &container);
         void FORMAL(std::vector<Formal*> &container);
 
         // Expressions
