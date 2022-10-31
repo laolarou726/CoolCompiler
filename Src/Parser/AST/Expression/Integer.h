@@ -16,9 +16,7 @@ namespace CoolCompiler {
         explicit Integer(int value);
         [[nodiscard]] int getValue() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            return "Int";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

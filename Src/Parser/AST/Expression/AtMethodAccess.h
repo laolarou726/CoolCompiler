@@ -23,7 +23,8 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] std::string getMethod() const;
         [[nodiscard]] std::vector<Expression*> getArguments() const;
-        std::string typeCheck() override;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

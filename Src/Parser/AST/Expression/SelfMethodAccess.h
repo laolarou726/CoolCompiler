@@ -18,7 +18,8 @@ namespace CoolCompiler {
         explicit SelfMethodAccess(const std::string &method, const std::vector<Expression*> &arguments);
         [[nodiscard]] std::string getMethod() const;
         [[nodiscard]] std::vector<Expression*> getArguments() const;
-        std::string typeCheck() override;
+
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

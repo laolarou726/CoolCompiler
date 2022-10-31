@@ -3,6 +3,7 @@
 //
 
 #include "Id.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Id::Id(const std::string &name) : Expression("id") {
@@ -13,5 +14,9 @@ namespace CoolCompiler {
 
     std::string Id::getName() const {
         return name;
+    }
+
+    std::string Id::typeCheck(SemanticAnalyzer *analyzer) {
+        return "String";
     }
 } // CoolCompiler

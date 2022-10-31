@@ -16,10 +16,7 @@ namespace CoolCompiler {
         explicit IsVoid(Expression *expression);
         [[nodiscard]] Expression* getExpression() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            expression->typeCheck(analyzer);
-            return "Bool";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

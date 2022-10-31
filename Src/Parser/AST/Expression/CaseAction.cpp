@@ -3,6 +3,7 @@
 //
 
 #include "CaseAction.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     CaseAction::CaseAction(const std::string &name, const std::string &type, Expression *expression) : Expression("case_action") {
@@ -21,5 +22,21 @@ namespace CoolCompiler {
 
     Expression* CaseAction::getExpression() const {
         return expression;
+    }
+
+    std::string CaseAction::typeCheck(SemanticAnalyzer *analyzer) {
+        if(type == "Self")
+            analyzer->fail("'self' cannot be bound in a 'branch' expression.");
+
+        auto* objectsTable = analyzer->getObjectsTable();
+
+        objectsTable->enter();
+        objectsTable->add(name, &type);
+
+        std::string caseActionExprType = expression->typeCheck(analyzer);
+
+        objectsTable->exit();
+
+        return caseActionExprType;
     }
 } // CoolCompiler

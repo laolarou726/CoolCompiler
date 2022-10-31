@@ -3,6 +3,7 @@
 //
 
 #include "String.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     String::String(const std::string &value) : Expression("string") {
@@ -11,5 +12,9 @@ namespace CoolCompiler {
 
     std::string String::getValue() const {
         return value;
+    }
+
+    std::string String::typeCheck(SemanticAnalyzer *analyzer) {
+        return "String";
     }
 } // CoolCompiler

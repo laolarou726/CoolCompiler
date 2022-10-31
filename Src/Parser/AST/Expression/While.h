@@ -19,18 +19,7 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getCondition() const;
         [[nodiscard]] Expression* getBody() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            std::string conditionType = condition->typeCheck(analyzer);
-            body->typeCheck(analyzer);
-
-            if(conditionType != "Bool"){
-                std::string message = fmt::format("{}: Expected the condition of while to be of type <Bool> but got the predicate of type <{}> instead.",
-                                                  "While", conditionType);
-                analyzer->fail(message);
-            }
-
-            return "Object";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

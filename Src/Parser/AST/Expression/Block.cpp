@@ -3,6 +3,7 @@
 //
 
 #include "Block.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Block::Block(const std::vector<Expression*> &expressions) : Expression("block") {
@@ -11,5 +12,14 @@ namespace CoolCompiler {
 
     std::vector<Expression*> Block::getExpressions() const {
         return expressions;
+    }
+
+    std::string Block::typeCheck(SemanticAnalyzer *analyzer) {
+        std::string result = "Object";
+
+        for(auto* expr : expressions)
+            result = expr->typeCheck(analyzer);
+
+        return result;
     }
 } // CoolCompiler

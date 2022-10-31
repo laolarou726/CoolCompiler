@@ -21,20 +21,7 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getConditionTrue() const;
         [[nodiscard]] Expression* getConditionFalse() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            std::string conditionType = condition->typeCheck(analyzer);
-            std::string trueType = conditionTrue->typeCheck(analyzer);
-            std::string falseType = conditionFalse->typeCheck(analyzer);
-
-            if(conditionType != "Bool"){
-                std::string message = fmt::format("{}: Expected the condition of if to be of type <Bool> but got the predicate of type <{}> instead.",
-                                                  "If", conditionType);
-                analyzer->fail(message);
-            }
-
-            std::string result = analyzer->leastCommonAncestorType(trueType, falseType);
-            return result;
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

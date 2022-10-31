@@ -3,6 +3,7 @@
 //
 
 #include "SelfMethodAccess.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     SelfMethodAccess::SelfMethodAccess(const std::string &method, const std::vector<Expression*> &arguments) : Expression("self_method_access") {
@@ -16,5 +17,9 @@ namespace CoolCompiler {
 
     std::vector<Expression*> SelfMethodAccess::getArguments() const {
         return arguments;
+    }
+
+    std::string SelfMethodAccess::typeCheck(SemanticAnalyzer *analyzer) {
+        return "";
     }
 } // CoolCompiler

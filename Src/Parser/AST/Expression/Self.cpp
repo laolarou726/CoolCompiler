@@ -3,9 +3,14 @@
 //
 
 #include "Self.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Self::Self() : Expression("self") {
 
+    }
+
+    std::string Self::typeCheck(SemanticAnalyzer *analyzer) {
+        return "Self";
     }
 } // CoolCompiler

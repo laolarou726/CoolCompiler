@@ -16,9 +16,7 @@ namespace CoolCompiler {
         explicit Boolean(bool value);
         [[nodiscard]] bool getValue() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            return "Bool";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

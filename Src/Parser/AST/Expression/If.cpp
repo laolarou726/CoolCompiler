@@ -3,6 +3,7 @@
 //
 
 #include "If.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     If::If(Expression* condition, Expression* conditionTrue, Expression* conditionFalse) : Expression("if") {
@@ -21,5 +22,20 @@ namespace CoolCompiler {
 
     Expression* If::getConditionFalse() const {
         return conditionFalse;
+    }
+
+    std::string If::typeCheck(SemanticAnalyzer *analyzer) {
+        std::string conditionType = condition->typeCheck(analyzer);
+        std::string trueType = conditionTrue->typeCheck(analyzer);
+        std::string falseType = conditionFalse->typeCheck(analyzer);
+
+        if(conditionType != "Bool"){
+            std::string message = fmt::format("{}: Expected the condition of if to be of type <Bool> but got the predicate of type <{}> instead.",
+                                              "If", conditionType);
+            analyzer->fail(message);
+        }
+
+        std::string result = analyzer->leastCommonAncestorType(trueType, falseType);
+        return result;
     }
 } // CoolCompiler

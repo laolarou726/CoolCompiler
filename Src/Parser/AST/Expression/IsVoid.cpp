@@ -3,6 +3,7 @@
 //
 
 #include "IsVoid.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     IsVoid::IsVoid(Expression *expression) : Expression("is_void") {
@@ -11,5 +12,10 @@ namespace CoolCompiler {
 
     Expression* IsVoid::getExpression() const {
         return expression;
+    }
+
+    std::string IsVoid::typeCheck(SemanticAnalyzer *analyzer) {
+        expression->typeCheck(analyzer);
+        return "Bool";
     }
 } // CoolCompiler

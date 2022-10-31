@@ -3,6 +3,7 @@
 //
 
 #include "Let.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Let::Let(const std::vector<InnerLet*> &parameters, Expression* expression) : Expression("let") {
@@ -16,5 +17,22 @@ namespace CoolCompiler {
 
     Expression* Let::getExpression() const {
         return expression;
+    }
+
+    std::string Let::typeCheck(SemanticAnalyzer *analyzer) {
+        auto* objectsTable = analyzer->getObjectsTable();
+
+        objectsTable->enter();
+
+        for(auto* innerLet : parameters){
+            std::string innerLetType = innerLet->typeCheck(analyzer);
+            objectsTable->add(innerLet->getName(), &innerLetType);
+        }
+
+        std::string resultType = expression->typeCheck(analyzer);
+
+        objectsTable->exit();
+
+        return resultType;
     }
 } // CoolCompiler

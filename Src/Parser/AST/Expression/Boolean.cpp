@@ -3,6 +3,7 @@
 //
 
 #include "Boolean.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Boolean::Boolean(bool value) : Expression("boolean") {
@@ -11,5 +12,9 @@ namespace CoolCompiler {
 
     bool Boolean::getValue() const {
         return value;
+    }
+
+    std::string Boolean::typeCheck(SemanticAnalyzer *analyzer) {
+        return "Bool";
     }
 } // CoolCompiler

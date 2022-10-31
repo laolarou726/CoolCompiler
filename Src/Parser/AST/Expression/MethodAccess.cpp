@@ -3,6 +3,7 @@
 //
 
 #include "MethodAccess.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     MethodAccess::MethodAccess(Expression* instance,
@@ -23,5 +24,9 @@ namespace CoolCompiler {
 
     std::vector<Expression*> MethodAccess::getArguments() const {
         return arguments;
+    }
+
+    std::string MethodAccess::typeCheck(SemanticAnalyzer *analyzer) {
+        return "";
     }
 } // CoolCompiler

@@ -3,6 +3,7 @@
 //
 
 #include "Integer.h"
+#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Integer::Integer(int value) : Expression("integer") {
@@ -11,5 +12,9 @@ namespace CoolCompiler {
 
     int Integer::getValue() const {
         return value;
+    }
+
+    std::string Integer::typeCheck(SemanticAnalyzer *analyzer) {
+        return "Int";
     }
 } // CoolCompiler

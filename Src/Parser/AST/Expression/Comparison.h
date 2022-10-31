@@ -21,19 +21,7 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getExpressionLeft() const;
         [[nodiscard]] Expression* getExpressionRight() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            std::string leftExprType = expressionLeft->typeCheck(analyzer);
-            std::string rightExprType = expressionRight->typeCheck(analyzer);
-
-            if(leftExprType == "Int" && rightExprType == "Int")
-                return "Bool";
-
-            std::string message = fmt::format("{}: Expected both arguments of operator = to be of type Int but got arguments of types <{}> and <{}>.",
-                                              "Comparison", leftExprType, rightExprType);
-            analyzer->fail(message);
-
-            return "Object";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

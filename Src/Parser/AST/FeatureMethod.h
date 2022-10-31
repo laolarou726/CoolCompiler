@@ -7,8 +7,8 @@
 
 #include <vector>
 #include "AST.h"
-#include "Expression/Expression.h"
 #include "Formal.h"
+#include "Expression/Expression.h"
 
 namespace CoolCompiler {
 

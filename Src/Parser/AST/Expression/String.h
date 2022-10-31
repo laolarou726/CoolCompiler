@@ -17,9 +17,7 @@ namespace CoolCompiler {
         explicit String(const std::string &value);
         [[nodiscard]] std::string getValue() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            return "String";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

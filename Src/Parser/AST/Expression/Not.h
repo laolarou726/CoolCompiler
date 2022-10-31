@@ -17,18 +17,7 @@ namespace CoolCompiler {
         explicit Not(Expression *expression);
         [[nodiscard]] Expression* getExpression() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            std::string exprType = expression->typeCheck(analyzer);
-
-            if(exprType != "Bool"){
-                std::string message = fmt::format("{}: Expected <Bool> but get <{}>.", "Not", exprType);
-                analyzer->fail(message);
-
-                return "Object";
-            }
-
-            return "Bool";
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

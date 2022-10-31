@@ -6,9 +6,10 @@
 #define COOLCOMPILER_EXPRESSION_H
 
 #include "../AST.h"
-#include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
+
+    class SemanticAnalyzer;
 
     class Expression : public AST {
     protected:

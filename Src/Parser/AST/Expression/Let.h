@@ -20,12 +20,7 @@ namespace CoolCompiler {
         [[nodiscard]] std::vector<InnerLet*> getParameters() const;
         [[nodiscard]] Expression* getExpression() const;
 
-        std::string typeCheck(SemanticAnalyzer* analyzer) override{
-            auto* objectsTable = analyzer->getObjectsTable();
-
-            objectsTable->enter();
-            if()
-        }
+        std::string typeCheck(SemanticAnalyzer* analyzer) override;
 
         void print(int depth) override{
             printTab(depth);
