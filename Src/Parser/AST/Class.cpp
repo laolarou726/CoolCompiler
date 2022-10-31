@@ -4,6 +4,7 @@
 
 #include "Class.h"
 #include "Feature/FeatureAttribute.h"
+#include "../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
     Class::Class(const std::string &name, const std::vector<FeatureBase*> &features, const std::string &inherits) : AST("class") {
@@ -34,5 +35,36 @@ namespace CoolCompiler {
         }
 
         return nullptr;
+    }
+
+    std::string Class::typeCheck(SemanticAnalyzer *analyzer) {
+        analyzer->setCurrentClassName(name);
+        analyzer->ensureAttributesUnique(this);
+
+        auto* objectsTable = analyzer->getObjectsTable();
+        std::string currentName = analyzer->getCurrentClassName();
+
+        objectsTable->enter();
+        objectsTable->add("self", &currentName);
+
+        analyzer->buildAttributeScopes(this);
+
+        for(auto* feature : features){
+            if(typeid(feature) == typeid(FeatureMethod)){
+                auto* featureMethod = (FeatureMethod*) feature;
+                analyzer->processMethod(this, featureMethod, featureMethod);
+            }
+
+            if(typeid(feature) == typeid(FeatureAttribute)){
+                std::string parentType = analyzer->getParentType(analyzer->getCurrentClassName());
+                analyzer->processAttribute(analyzer->getParentClass(parentType), (FeatureAttribute*) feature);
+            }
+        }
+
+        for(auto* feature : features){
+            feature->typeCheck(analyzer);
+        }
+
+        objectsTable->exit();
     }
 } // CoolCompiler

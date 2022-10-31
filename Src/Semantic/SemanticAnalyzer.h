@@ -7,7 +7,7 @@
 
 #include "../Parser/AST/Class.h"
 #include "../Parser/AST/Program.h"
-#include "unordered_map"
+#include "map"
 #include "../Lexer/Error.h"
 #include "SymbolTable/SymbolTable.h"
 #include "../Parser/AST/Feature/FeatureAttribute.h"
@@ -20,9 +20,9 @@ namespace CoolCompiler {
         int errorCount;
         std::string currentClassName;
         Program* program = nullptr;
-        std::unordered_map<std::string, Class*> classLookups;
-        std::unordered_map<std::string, std::vector<std::string>> inheritances;
-        std::unordered_map<std::string, std::string> inheritanceParents;
+        std::map<std::string, Class*> classLookups;
+        std::map<std::string, std::vector<std::string>> inheritances;
+        std::map<std::string, std::string> inheritanceParents;
         SymbolTable<std::string, std::string>* objectsTable;
 
         Class* OBJECT_CLASS;
@@ -36,24 +36,15 @@ namespace CoolCompiler {
         //CLASS CHECKS
         bool resolveDefinedClasses();
         bool buildInheritanceGraph();
-        bool graphDFS(std::unordered_map<std::string, int> &visitHistory, const std::string &type);
+        bool graphDFS(std::map<std::string, int> &visitHistory, const std::string &type);
         bool isGraphAcyclic();
         bool isValid();
-
-        void ensureAttributesUnique(Class* class_);
-
-        std::string getParentType(const std::string &type);
-
-        void buildAttributeScopes(const Class* class_);
-        void processAttribute(Class* class_, FeatureAttribute* attr);
-        void processMethod(Class* class_, FeatureMethod* method, FeatureMethod* parentMethod);
-        void typeCheck(Class* class_);
     public:
         explicit SemanticAnalyzer(Program* program);
         void doCheck();
         int getErrorCount() const;
         bool isTypeDefined(const std::string &type);
-        void fail(const std::string &message);
+        void fail(const std::string &message, bool exit = false);
         bool isPrimitive(const std::string &type);
         SymbolTable<std::string, std::string>* getObjectsTable() const;
 
@@ -64,6 +55,20 @@ namespace CoolCompiler {
         FeatureMethod* lookupMethod(const std::string &className, const std::string &method);
 
         bool isSubtype(const std::string &candidate, const std::string &target);
+
+        void ensureAttributesUnique(Class* class_);
+
+        void buildAttributeScopes(const Class* class_);
+
+        void processMethod(Class* class_, FeatureMethod* method, FeatureMethod* parentMethod);
+
+        std::string getParentType(const std::string &type);
+
+        Class* getParentClass(const std::string &type);
+
+        void setCurrentClassName(const std::string &name);
+
+        void processAttribute(Class* class_, FeatureAttribute* attr);
     };
 
 } // CoolCompiler

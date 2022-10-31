@@ -17,6 +17,17 @@ namespace CoolCompiler {
     }
 
     std::string Id::typeCheck(SemanticAnalyzer *analyzer) {
-        return "String";
+        auto* objectsTable = analyzer->getObjectsTable();
+        std::string* result = objectsTable->lookup(name);
+
+        if(result == nullptr){
+            std::string message = fmt::format("Tried to access undeclared identifier [{}].",
+                                              name);
+            analyzer->fail(message);
+
+            return "Object";
+        }
+
+        return *result;
     }
 } // CoolCompiler

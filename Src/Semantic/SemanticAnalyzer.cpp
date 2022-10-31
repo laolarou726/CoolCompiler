@@ -4,8 +4,6 @@
 
 #include <set>
 #include "SemanticAnalyzer.h"
-#include "../Parser/AST/Feature/FeatureMethod.h"
-#include "../Parser/AST/Feature/FeatureAttribute.h"
 #include "fmt/format.h"
 
 namespace CoolCompiler {
@@ -54,13 +52,13 @@ namespace CoolCompiler {
         stringFeatures.emplace_back(new FeatureMethod("length", INT_CLASS->getName(), nullptr));
 
         std::vector<Formal*> concatArguments;
-        concatArguments.emplace_back(new Formal("arg", STRING_CLASS->getName()));
-        stringFeatures.emplace_back(new FeatureMethod("concat", STRING_CLASS->getName(), nullptr, concatArguments));
+        concatArguments.emplace_back(new Formal("arg", "String"));
+        stringFeatures.emplace_back(new FeatureMethod("concat", "String", nullptr, concatArguments));
 
         std::vector<Formal*> substrArguments;
         substrArguments.emplace_back(new Formal("arg", INT_CLASS->getName()));
         substrArguments.emplace_back(new Formal("arg2", INT_CLASS->getName()));
-        stringFeatures.emplace_back(new FeatureMethod("substr", STRING_CLASS->getName(), nullptr, substrArguments));
+        stringFeatures.emplace_back(new FeatureMethod("substr", "String", nullptr, substrArguments));
 
         STRING_CLASS = new Class("String", stringFeatures, OBJECT_CLASS->getName());
 
@@ -79,10 +77,7 @@ namespace CoolCompiler {
     //CLASS CHECKS
 
     bool SemanticAnalyzer::resolveDefinedClasses() {
-        for(AST* ast : *program->getClasses()){
-            if(ast->getIdentifier() != "class") continue;
-
-            auto* class_ = (Class*) ast;
+        for(Class* class_ : *program->getClasses()){
             std::string className = class_->getName();
 
             if(className == OBJECT_CLASS->getName() ||
@@ -104,9 +99,9 @@ namespace CoolCompiler {
             }
 
             classLookups[className] = class_;
-
-            return true;
         }
+
+        return true;
     }
 
     bool SemanticAnalyzer::buildInheritanceGraph() {
@@ -114,6 +109,7 @@ namespace CoolCompiler {
             if(className == OBJECT_CLASS->getName()) continue;
 
             std::string inheritFrom = class_->getInherits();
+            inheritFrom = inheritFrom.empty() ? OBJECT_CLASS->getName() : inheritFrom;
 
             inheritanceParents[className] = inheritFrom;
 
@@ -127,8 +123,8 @@ namespace CoolCompiler {
                 return false;
             }
 
-            if(isTypeDefined(inheritFrom)){
-                std::string message = fmt::format("Class {} inherits from an undefined class {}.", className, inheritFrom);
+            if(!isTypeDefined(inheritFrom)){
+                std::string message = fmt::format("Class [{}] inherits from an undefined class [{}].", className, inheritFrom);
                 fail(message);
 
                 return false;
@@ -143,13 +139,13 @@ namespace CoolCompiler {
         return true;
     }
 
-    bool SemanticAnalyzer::graphDFS(std::unordered_map<std::string, int> &visitHistory, const std::string &type) {
+    bool SemanticAnalyzer::graphDFS(std::map<std::string, int> &visitHistory, const std::string &type) {
         visitHistory[type] = 0;
 
-        for(auto [className, _] : inheritances){
+        for(std::string className : inheritances[type]){
             if(visitHistory[className] == 0){
                 std::string message =
-                        fmt::format("There exists an (in)direct circular dependency between: {} and {}",
+                        fmt::format("There exists an (in)direct circular dependency between: [{}] and [{}]",
                                     type, className);
                 fail(message);
 
@@ -165,7 +161,7 @@ namespace CoolCompiler {
     }
 
     bool SemanticAnalyzer::isGraphAcyclic() {
-        std::unordered_map<std::string, int> visitHistory;
+        std::map<std::string, int> visitHistory;
 
         for(auto [className, _] : classLookups)
             visitHistory[className] = 2;
@@ -273,19 +269,36 @@ namespace CoolCompiler {
     }
 
     void SemanticAnalyzer::doCheck() {
+        errorCount = 0;
+        objectsTable = new SymbolTable<std::string, std::string>();
 
+        if(!resolveDefinedClasses())
+            fail("Compilation halted due to static semantic errors.", true);
+        if(!buildInheritanceGraph())
+            fail("Compilation halted due to static semantic errors.", true);
+        if(!isValid())
+            fail("Compilation halted due to static semantic errors.", true);
+        if(errorCount != 0)
+            fail("Compilation halted due to static semantic errors.", true);
+
+        for(auto* class_ : *program->getClasses())
+            class_->typeCheck(this);
+
+        if(errorCount != 0)
+            fail("Compilation halted due to static semantic errors.", true);
     }
 
-    void SemanticAnalyzer::fail(const std::string &message) {
+    void SemanticAnalyzer::fail(const std::string &message, bool exit) {
         errorCount++;
         std::cerr << message << std::endl;
+
+        if(exit)
+            std::exit(-1);
     }
 
     int SemanticAnalyzer::getErrorCount() const {
         return errorCount;
     }
-
-    //TYPE CHECKS
 
     void SemanticAnalyzer::buildAttributeScopes(const Class *class_) {
         objectsTable->enter();
@@ -296,13 +309,15 @@ namespace CoolCompiler {
             auto* attr = (FeatureAttribute*) feature;
             auto type = attr->getType();
 
-            objectsTable->add(attr->getName(), &type);
+            objectsTable->add(attr->getName(), new std::string(type));
         }
 
-        if(class_->getName() == OBJECT_CLASS->getName()) return;
+        std::string className = class_->getName();
 
-        std::string inheritsRaw = class_->getInherits().empty() ? OBJECT_CLASS->getName() : class_->getInherits();
-        std::string inherits = getParentType(inheritsRaw);
+        if(className == OBJECT_CLASS->getName()) return;
+
+        // std::string inheritsRaw = class_->getInherits().empty() ? OBJECT_CLASS->getName() : class_->getInherits();
+        std::string inherits = getParentType(className);
         Class* superClass = classLookups[inherits];
 
         buildAttributeScopes(superClass);
@@ -382,36 +397,6 @@ namespace CoolCompiler {
         processMethod(newParentClass, method, newParentMethod);
     }
 
-    void SemanticAnalyzer::typeCheck(Class *class_) {
-        currentClassName = class_->getName();
-
-        ensureAttributesUnique(class_);
-
-        objectsTable = new SymbolTable<std::string, std::string>();
-        objectsTable->enter();
-        objectsTable->add("self", &currentClassName);
-
-        buildAttributeScopes(class_);
-
-        for(auto* feature : class_->getFeatures()){
-            if(typeid(feature) == typeid(FeatureMethod)){
-                auto* featureMethod = (FeatureMethod*) feature;
-                processMethod(class_, featureMethod, featureMethod);
-            }
-
-            if(typeid(feature) == typeid(FeatureAttribute)){
-                std::string parentType = getParentType(currentClassName);
-                processAttribute(classLookups[parentType], (FeatureAttribute*) feature);
-            }
-        }
-
-        for(auto* feature : class_->getFeatures()){
-            feature->typeCheck(this);
-        }
-
-        objectsTable->exit();
-    }
-
     SymbolTable<std::string, std::string> *SemanticAnalyzer::getObjectsTable() const {
         return objectsTable;
     }
@@ -441,6 +426,14 @@ namespace CoolCompiler {
         }
 
         return nullptr;
+    }
+
+    Class *SemanticAnalyzer::getParentClass(const std::string &type) {
+        return classLookups[type];
+    }
+
+    void SemanticAnalyzer::setCurrentClassName(const std::string &name) {
+        currentClassName = name;
     }
 
 } // CoolCompiler

@@ -7,21 +7,22 @@
 
 #include <vector>
 #include "AST.h"
+#include "Class.h"
 
 namespace CoolCompiler {
 
     class Program : public AST {
     private:
-        std::vector<AST*>* classes;
+        std::vector<Class*>* classes;
     public:
         explicit Program();
-        [[nodiscard]] std::vector<AST*>* getClasses() const;
+        [[nodiscard]] std::vector<Class*>* getClasses() const;
 
         void print(int depth) override{
             printTab(depth);
             std::cout << "PROGRAM [" << std::endl;
 
-            for(AST *ast : *classes)
+            for(Class *ast : *classes)
                 ast->print(depth + 1);
 
             printTab(depth);

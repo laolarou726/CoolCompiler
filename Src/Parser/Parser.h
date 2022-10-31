@@ -34,7 +34,7 @@ namespace CoolCompiler {
         // AST Resolver
 
         void PROGRAM();
-        void CLASS(std::vector<AST*> &container);
+        void CLASS(std::vector<Class*> &container);
         void FEATURE_ATTR(const Token &objId, std::vector<FeatureBase*> &container);
         void FEATURE_METHOD(const Token &objId, std::vector<FeatureBase*> &container);
         void FEATURE(std::vector<FeatureBase*> &container);

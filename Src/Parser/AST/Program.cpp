@@ -6,10 +6,10 @@
 
 namespace CoolCompiler {
     Program::Program() : AST("program") {
-        this->classes = new std::vector<AST*>();
+        this->classes = new std::vector<Class*>();
     }
 
-    std::vector<AST*>* Program::getClasses() const {
+    std::vector<Class*>* Program::getClasses() const {
         return classes;
     }
 } // CoolCompiler

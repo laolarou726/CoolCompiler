@@ -6,6 +6,7 @@
 #define COOLCOMPILER_ID_H
 
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 

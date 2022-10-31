@@ -107,7 +107,7 @@ namespace CoolCompiler {
         }
     }
 
-    void Parser::CLASS(std::vector<AST*> &container) {
+    void Parser::CLASS(std::vector<Class*> &container) {
         expect(TokenType::CLASS);
         Token typeId = expect(TYPE_ID);
 
