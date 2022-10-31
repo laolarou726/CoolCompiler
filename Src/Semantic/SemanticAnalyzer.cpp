@@ -4,8 +4,8 @@
 
 #include <set>
 #include "SemanticAnalyzer.h"
-#include "../Parser/AST/FeatureMethod.h"
-#include "../Parser/AST/FeatureAttribute.h"
+#include "../Parser/AST/Feature/FeatureMethod.h"
+#include "../Parser/AST/Feature/FeatureAttribute.h"
 #include "fmt/format.h"
 
 namespace CoolCompiler {
@@ -406,26 +406,10 @@ namespace CoolCompiler {
         }
 
         for(auto* feature : class_->getFeatures()){
-            if(typeid(feature) == typeid(FeatureMethod)){
-                auto* featureMethod = (FeatureMethod*) feature;
-                check(featureMethod);
-            }
-
-            if(typeid(feature) == typeid(FeatureAttribute)){
-                auto* featureAttr = (FeatureAttribute*) feature;
-                check(featureAttr);
-            }
+            feature->typeCheck(this);
         }
 
         objectsTable->exit();
-    }
-
-    std::string SemanticAnalyzer::check(FeatureAttribute *attr) {
-        auto* initExpr = attr->getInit();
-    }
-
-    std::string SemanticAnalyzer::check(FeatureMethod *method) {
-
     }
 
     SymbolTable<std::string, std::string> *SemanticAnalyzer::getObjectsTable() const {

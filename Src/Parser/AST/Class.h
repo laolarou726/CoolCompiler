@@ -8,19 +8,19 @@
 #include <vector>
 #include <iostream>
 #include "AST.h"
-#include "FeatureMethod.h"
+#include "Feature/FeatureMethod.h"
 
 namespace CoolCompiler {
 
     class Class : public AST {
     private:
         std::string name;
-        std::vector<AST*> features;
+        std::vector<FeatureBase*> features;
         std::string inherits;
     public:
-        Class(const std::string &name, const std::vector<AST*> &features, const std::string &inherits);
+        Class(const std::string &name, const std::vector<FeatureBase*> &features, const std::string &inherits);
         [[nodiscard]] std::string getName() const;
-        [[nodiscard]] std::vector<AST*> getFeatures() const;
+        [[nodiscard]] std::vector<FeatureBase*> getFeatures() const;
         [[nodiscard]] std::string getInherits() const;
         [[nodiscard]] FeatureMethod* getMethod(const std::string &method) const;
 
@@ -28,7 +28,7 @@ namespace CoolCompiler {
             printTab(depth);
             std::cout << "CLASS [" << name << "]:["  << inherits << "][" << std::endl;
 
-            for(AST *ast : features)
+            for(FeatureBase *ast : features)
                 ast->print(depth + 1);
 
             printTab(depth);

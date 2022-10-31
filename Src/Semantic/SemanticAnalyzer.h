@@ -10,8 +10,8 @@
 #include "unordered_map"
 #include "../Lexer/Error.h"
 #include "SymbolTable/SymbolTable.h"
-#include "../Parser/AST/FeatureAttribute.h"
-#include "../Parser/AST/FeatureMethod.h"
+#include "../Parser/AST/Feature/FeatureAttribute.h"
+#include "../Parser/AST/Feature/FeatureMethod.h"
 
 namespace CoolCompiler {
 
@@ -43,10 +43,6 @@ namespace CoolCompiler {
         void ensureAttributesUnique(Class* class_);
 
         std::string getParentType(const std::string &type);
-
-        //TYPE CHECKS
-        std::string check(FeatureAttribute* attr);
-        std::string check(FeatureMethod* method);
 
         void buildAttributeScopes(const Class* class_);
         void processAttribute(Class* class_, FeatureAttribute* attr);

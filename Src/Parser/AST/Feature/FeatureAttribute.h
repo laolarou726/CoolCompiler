@@ -5,12 +5,13 @@
 #ifndef COOLCOMPILER_FEATUREATTRIBUTE_H
 #define COOLCOMPILER_FEATUREATTRIBUTE_H
 
-#include "AST.h"
-#include "Expression/Expression.h"
+#include "../AST.h"
+#include "../Expression/Expression.h"
+#include "FeatureBase.h"
 
 namespace CoolCompiler {
 
-    class FeatureAttribute : public AST {
+    class FeatureAttribute : public FeatureBase {
     private:
         std::string name;
         std::string type;
@@ -21,6 +22,8 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::string getType() const;
         [[nodiscard]] Expression* getInit() const;
+
+        std::string typeCheck(CoolCompiler::SemanticAnalyzer *analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

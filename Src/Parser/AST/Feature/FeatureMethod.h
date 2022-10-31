@@ -6,13 +6,15 @@
 #define COOLCOMPILER_FEATUREMETHOD_H
 
 #include <vector>
-#include "AST.h"
-#include "Formal.h"
-#include "Expression/Expression.h"
+#include "../AST.h"
+#include "../Formal.h"
+#include "../Expression/Expression.h"
+#include "FeatureBase.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
-    class FeatureMethod : public AST {
+    class FeatureMethod : public FeatureBase {
     private:
         std::string name;
         std::string returnType;
@@ -26,6 +28,8 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getReturnType() const;
         [[nodiscard]] Expression* getExpression() const;
         [[nodiscard]] std::vector<Formal*> getFormalArguments() const;
+
+        std::string typeCheck(CoolCompiler::SemanticAnalyzer *analyzer) override;
 
         void print(int depth) override{
             printTab(depth);

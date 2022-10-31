@@ -9,8 +9,8 @@
 #include "AST/AST.h"
 #include "AST/Program.h"
 #include "AST/Expression/Expression.h"
-#include "AST/FeatureAttribute.h"
-#include "AST/FeatureMethod.h"
+#include "AST/Feature/FeatureAttribute.h"
+#include "AST/Feature/FeatureMethod.h"
 #include "AST/Expression/Assignment.h"
 // Expressions
 #include "AST/Expression/Self.h"
