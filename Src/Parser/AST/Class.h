@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include "AST.h"
+#include "FeatureMethod.h"
 
 namespace CoolCompiler {
 
@@ -21,6 +22,7 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
         [[nodiscard]] std::vector<AST*> getFeatures() const;
         [[nodiscard]] std::string getInherits() const;
+        [[nodiscard]] FeatureMethod* getMethod(const std::string &method) const;
 
         void print(int depth) override{
             printTab(depth);

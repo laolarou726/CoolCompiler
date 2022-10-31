@@ -62,6 +62,10 @@ namespace CoolCompiler {
         SymbolTable<std::string, std::string>* getObjectsTable() const;
 
         std::string leastCommonAncestorType(const std::string &lhs, const std::string &rhs);
+        std::string getCurrentClassName() const;
+
+        FeatureMethod* lookupMethodInChain(const std::string &className, const std::string &method);
+        FeatureMethod* lookupMethod(const std::string &className, const std::string &method);
 
         bool isSubtype(const std::string &candidate, const std::string &target);
     };

@@ -432,4 +432,31 @@ namespace CoolCompiler {
         return objectsTable;
     }
 
+    std::string SemanticAnalyzer::getCurrentClassName() const {
+        return currentClassName;
+    }
+
+    FeatureMethod* SemanticAnalyzer::lookupMethodInChain(const std::string &className, const std::string &method) {
+        if(className == "_no_type") return nullptr;
+
+        auto* definition = classLookups[className]->getMethod(method);
+
+        if(definition != nullptr) return definition;
+
+        std::string parentClass = getParentType(className);
+
+        return lookupMethodInChain(parentClass, method);
+    }
+
+    FeatureMethod *SemanticAnalyzer::lookupMethod(const std::string &className, const std::string &method) {
+        auto* chainMethod = lookupMethodInChain(className, method);
+
+        if(chainMethod != nullptr) return chainMethod;
+        if(isPrimitive(className)){
+            return classLookups[className]->getMethod(method);
+        }
+
+        return nullptr;
+    }
+
 } // CoolCompiler

@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "Expression.h"
+#include "fmt/format.h"
 
 namespace CoolCompiler {
 
