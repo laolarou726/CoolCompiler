@@ -622,6 +622,30 @@ namespace CoolCompiler {
         container.emplace_back(new Comparison(token.getLexeme(), tokenType, left, right));
     }
 
+    void Parser::COMPARISON_OPS(Expression *left, std::vector<Expression *> &container) {
+        std::vector<Expression*> resultExpr;
+
+        switch (peek().getTokenType()) {
+            case TokenType::LT:
+                LESS_THAN(left, resultExpr);
+                break;
+            case TokenType::LTOE:
+                LESS_THAN_EQ(left, resultExpr);
+                break;
+            case TokenType::GT:
+                GREATER_THAN(left, resultExpr);
+                break;
+            case TokenType::GTOE:
+                GREATER_THAN_EQ(left, resultExpr);
+                break;
+            case TokenType::EQ:
+                EQ(left, resultExpr);
+                break;
+        }
+
+        container.emplace_back(resultExpr.back());
+    }
+
     void Parser::NOT(std::vector<Expression*> &container) {
         expect(TokenType::NOT);
 
@@ -778,19 +802,11 @@ namespace CoolCompiler {
                 MATH_OPS(expr, container);
                 break;
             case TokenType::LT:
-                LESS_THAN(expr, container);
-                break;
             case TokenType::LTOE:
-                LESS_THAN_EQ(expr, container);
-                break;
             case TokenType::GT:
-                GREATER_THAN(expr, container);
-                break;
             case TokenType::GTOE:
-                GREATER_THAN_EQ(expr, container);
-                break;
             case TokenType::EQ:
-                EQ(expr, container);
+                COMPARISON_OPS(expr, container);
                 break;
             default:
                 container.emplace_back(expr);

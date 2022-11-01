@@ -70,6 +70,7 @@ namespace CoolCompiler {
         void GREATER_THAN_EQ(Expression* left, std::vector<Expression*> &container);
         void EQ(Expression* left, std::vector<Expression*> &container);
         void COMPARISON(TokenType tokenType, Expression* left, std::vector<Expression*> &container);
+        void COMPARISON_OPS(Expression* left, std::vector<Expression*> &container);
 
         void NOT(std::vector<Expression*> &container);
         void PAREN(std::vector<Expression*> &container);
