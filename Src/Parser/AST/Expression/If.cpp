@@ -29,6 +29,9 @@ namespace CoolCompiler {
         std::string trueType = conditionTrue->typeCheck(analyzer);
         std::string falseType = conditionFalse->typeCheck(analyzer);
 
+        trueType = trueType == "SELF_TYPE" ? analyzer->getCurrentClassName() : trueType;
+        falseType = falseType == "SELF_TYPE" ? analyzer->getCurrentClassName() : falseType;
+
         if(conditionType != "Bool"){
             std::string message = fmt::format("{}: Expected the condition of if to be of type <Bool> but got the predicate of type <{}> instead.",
                                               "If", conditionType);

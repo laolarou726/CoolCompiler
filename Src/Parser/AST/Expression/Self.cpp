@@ -11,6 +11,6 @@ namespace CoolCompiler {
     }
 
     std::string Self::typeCheck(SemanticAnalyzer *analyzer) {
-        return "Self";
+        return "SELF_TYPE";
     }
 } // CoolCompiler

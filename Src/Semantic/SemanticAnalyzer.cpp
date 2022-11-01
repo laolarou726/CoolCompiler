@@ -197,12 +197,17 @@ namespace CoolCompiler {
             isCurrentClass = true;
         }
 
+        std::string realTarget = target;
         std::string current = isCurrentClass ? currentClassName : candidate;
+        if(isCurrentClass){
+            current = realTarget;
+            realTarget = currentClassName;
+        }
 
-        while(current != OBJECT_CLASS->getName() && current != target)
+        while(current != OBJECT_CLASS->getName() && current != realTarget)
             current = inheritanceParents[current];
 
-        return current == target;
+        return current == realTarget;
     }
 
     bool SemanticAnalyzer::isTypeDefined(const std::string &type) {
@@ -222,7 +227,7 @@ namespace CoolCompiler {
         std::string name = class_->getName();
 
         for(auto* feature : class_->getFeatures()){
-            if(typeid(feature) == typeid(FeatureMethod)) continue;
+            if(dynamic_cast<FeatureMethod*>(feature) != nullptr) continue;
 
             auto* featureAttr = (FeatureAttribute*) feature;
             std::string attrName = featureAttr->getName();
@@ -273,24 +278,24 @@ namespace CoolCompiler {
         objectsTable = new SymbolTable<std::string, std::string>();
 
         if(!resolveDefinedClasses())
-            fail("Compilation halted due to static semantic errors.", true);
+            fail("Compilation halted due to static semantic errors.");
         if(!buildInheritanceGraph())
-            fail("Compilation halted due to static semantic errors.", true);
+            fail("Compilation halted due to static semantic errors.");
         if(!isValid())
-            fail("Compilation halted due to static semantic errors.", true);
+            fail("Compilation halted due to static semantic errors.");
         if(errorCount != 0)
-            fail("Compilation halted due to static semantic errors.", true);
+            fail("Compilation halted due to static semantic errors.");
 
         for(auto* class_ : *program->getClasses())
             class_->typeCheck(this);
 
         if(errorCount != 0)
-            fail("Compilation halted due to static semantic errors.", true);
+            fail("Compilation halted due to static semantic errors.");
     }
 
     void SemanticAnalyzer::fail(const std::string &message, bool exit) {
         errorCount++;
-        std::cerr << message << std::endl;
+        std::cerr << currentClassName << ": " << message << std::endl;
 
         if(exit)
             std::exit(-1);
@@ -304,7 +309,7 @@ namespace CoolCompiler {
         objectsTable->enter();
 
         for(auto* feature : class_->getFeatures()){
-            if(typeid(feature) == typeid(FeatureMethod)) continue;
+            if(dynamic_cast<FeatureMethod*>(feature) != nullptr) continue;
 
             auto* attr = (FeatureAttribute*) feature;
             auto type = attr->getType();
@@ -327,7 +332,7 @@ namespace CoolCompiler {
         bool isInheritAttr = false;
 
         for(AST* feature : class_->getFeatures()){
-            if(typeid(feature) == typeid(FeatureMethod)) continue;
+            if(dynamic_cast<FeatureMethod*>(feature) != nullptr) continue;
 
             auto* innerAttr = (FeatureAttribute*) feature;
 
@@ -335,7 +340,7 @@ namespace CoolCompiler {
         }
 
         if(isInheritAttr){
-            fail(fmt::format("{}'s attribute {} is an attribute of an inherited class.",
+            fail(fmt::format("{}'s attribute [{}] is an attribute of an inherited class.",
                              currentClassName, attr->getName()));
         }
 
@@ -384,7 +389,7 @@ namespace CoolCompiler {
         FeatureMethod* newParentMethod = nullptr;
 
         for(auto* feature : newParentClass->getFeatures()){
-            if(typeid(feature) == typeid(FeatureAttribute)) continue;
+            if(dynamic_cast<FeatureAttribute*>(feature) != nullptr) continue;
 
             auto* featureMethod = (FeatureMethod*) feature;
 

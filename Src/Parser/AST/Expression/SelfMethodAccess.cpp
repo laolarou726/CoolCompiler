@@ -61,6 +61,6 @@ namespace CoolCompiler {
         if(!isDispatchValid)
             return "Object";
 
-        return analyzer->getCurrentClassName();
+        return returnType == "SELF_TYPE" ? analyzer->getCurrentClassName() : returnType;
     }
 } // CoolCompiler

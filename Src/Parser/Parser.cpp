@@ -375,7 +375,24 @@ namespace CoolCompiler {
 
         expect(RIGHT_PAREN);
 
-        container.emplace_back(new SelfMethodAccess(method, parameters));
+        Expression* result = new SelfMethodAccess(method, parameters);
+        std::vector<Expression*> resultExpr;
+
+        if(peek().getTokenType() == DOT){
+            next();
+            METHOD_ACCESS(result, resultExpr);
+            container.emplace_back(resultExpr.back());
+            return;
+        }
+
+        if(peek().getTokenType() == AT){
+            next();
+            AT_METHOD_ACCESS(result, resultExpr);
+            container.emplace_back(resultExpr.back());
+            return;
+        }
+
+        container.emplace_back(result);
     }
 
     void Parser::LET(std::vector<Expression*> &container) {
@@ -406,6 +423,11 @@ namespace CoolCompiler {
                                  assignExpressions.front()));
             }
         }
+        else{
+            innerLets.emplace_back(
+                    new InnerLet(objId.getLexeme(),
+                                 typeId.getLexeme()));
+        }
 
         if(peek().getTokenType() == COMMA){
             while(peek().getTokenType() != IN){
@@ -427,6 +449,11 @@ namespace CoolCompiler {
                             new InnerLet(objId1.getLexeme(),
                                      typeId1.getLexeme(),
                                      assignExpressions1.front()));
+                }
+                else{
+                    innerLets.emplace_back(
+                            new InnerLet(objId1.getLexeme(),
+                                         typeId1.getLexeme()));
                 }
             }
         }
@@ -480,7 +507,7 @@ namespace CoolCompiler {
 
                 expect(SEMICOLON);
 
-                actions.emplace_back(new CaseAction(objIdN.getLexeme(), objIdN.getLexeme(), caseActionN.front()));
+                actions.emplace_back(new CaseAction(objIdN.getLexeme(), typeIdN.getLexeme(), caseActionN.front()));
             }
         }
 

@@ -9,6 +9,7 @@ namespace CoolCompiler {
     InnerLet::InnerLet(const std::string &name, const std::string &type) : Expression("inner_let") {
         this->name = name;
         this->type = type;
+        this->expression = nullptr;
     }
 
     InnerLet::InnerLet(const std::string &name, const std::string &type, Expression* expression) : Expression("inner_let") {

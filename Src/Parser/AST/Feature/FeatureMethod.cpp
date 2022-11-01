@@ -71,21 +71,23 @@ namespace CoolCompiler {
                 analyzer->fail(message);
             }
             else{
-                objectsTable->add(formalName, &formalType);
+                objectsTable->add(formalName, new std::string(formalType));
             }
-
-            std::string actualReturnType = expression->typeCheck(analyzer);
-
-            if(!analyzer->isSubtype(actualReturnType, returnType)){
-                std::string message = fmt::format("Inferred return type <{}> of the method [{}] is not compatible with declared return type <{}>.",
-                                                  actualReturnType, name, returnType);
-                analyzer->fail(message);
-            }
-
-            objectsTable->exit();
-
-            return returnType;
         }
+
+        std::string expectedReturnType = returnType == "SELF_TYPE" ? analyzer->getCurrentClassName() : returnType;
+        std::string actualReturnType = expression->typeCheck(analyzer);
+        actualReturnType = actualReturnType == "SELF_TYPE" ? analyzer->getCurrentClassName() : actualReturnType;
+
+        if(!analyzer->isSubtype(actualReturnType, expectedReturnType)){
+            std::string message = fmt::format("Inferred return type <{}> of the method [{}] is not compatible with declared return type <{}>.",
+                                              actualReturnType, name, returnType);
+            analyzer->fail(message);
+        }
+
+        objectsTable->exit();
+
+        return returnType;
     }
 
 }

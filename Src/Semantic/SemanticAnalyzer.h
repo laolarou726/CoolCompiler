@@ -42,14 +42,14 @@ namespace CoolCompiler {
     public:
         explicit SemanticAnalyzer(Program* program);
         void doCheck();
-        int getErrorCount() const;
+        [[nodiscard]] int getErrorCount() const;
         bool isTypeDefined(const std::string &type);
         void fail(const std::string &message, bool exit = false);
         bool isPrimitive(const std::string &type);
-        SymbolTable<std::string, std::string>* getObjectsTable() const;
+        [[nodiscard]] SymbolTable<std::string, std::string>* getObjectsTable() const;
 
         std::string leastCommonAncestorType(const std::string &lhs, const std::string &rhs);
-        std::string getCurrentClassName() const;
+        [[nodiscard]] std::string getCurrentClassName() const;
 
         FeatureMethod* lookupMethodInChain(const std::string &className, const std::string &method);
         FeatureMethod* lookupMethod(const std::string &className, const std::string &method);

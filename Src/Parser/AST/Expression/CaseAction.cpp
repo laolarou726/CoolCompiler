@@ -31,7 +31,7 @@ namespace CoolCompiler {
         auto* objectsTable = analyzer->getObjectsTable();
 
         objectsTable->enter();
-        objectsTable->add(name, &type);
+        objectsTable->add(name, new std::string(type));
 
         std::string caseActionExprType = expression->typeCheck(analyzer);
 

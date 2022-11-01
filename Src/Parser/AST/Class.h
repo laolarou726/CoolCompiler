@@ -25,7 +25,7 @@ namespace CoolCompiler {
         [[nodiscard]] std::vector<FeatureBase*> getFeatures() const;
         [[nodiscard]] std::string getInherits() const;
         [[nodiscard]] FeatureMethod* getMethod(const std::string &method) const;
-        std::string typeCheck(SemanticAnalyzer* analyzer);
+        void typeCheck(SemanticAnalyzer* analyzer);
 
         void print(int depth) override{
             printTab(depth);

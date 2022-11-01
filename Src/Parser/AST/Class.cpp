@@ -27,7 +27,7 @@ namespace CoolCompiler {
 
     FeatureMethod* Class::getMethod(const std::string &method) const {
         for(auto* feature : features){
-            if(typeid(feature) == typeid(FeatureAttribute)) continue;
+            if(dynamic_cast<FeatureAttribute*>(feature) != nullptr) continue;
 
             auto* featureMethod = (FeatureMethod*) feature;
 
@@ -37,7 +37,7 @@ namespace CoolCompiler {
         return nullptr;
     }
 
-    std::string Class::typeCheck(SemanticAnalyzer *analyzer) {
+    void Class::typeCheck(SemanticAnalyzer *analyzer) {
         analyzer->setCurrentClassName(name);
         analyzer->ensureAttributesUnique(this);
 
@@ -45,17 +45,18 @@ namespace CoolCompiler {
         std::string currentName = analyzer->getCurrentClassName();
 
         objectsTable->enter();
-        objectsTable->add("self", &currentName);
+        objectsTable->add("Self", new std::string(currentName));
 
         analyzer->buildAttributeScopes(this);
 
         for(auto* feature : features){
-            if(typeid(feature) == typeid(FeatureMethod)){
+
+            if(dynamic_cast<FeatureMethod*>(feature) != nullptr){
                 auto* featureMethod = (FeatureMethod*) feature;
                 analyzer->processMethod(this, featureMethod, featureMethod);
             }
 
-            if(typeid(feature) == typeid(FeatureAttribute)){
+            if(dynamic_cast<FeatureAttribute*>(feature) != nullptr){
                 std::string parentType = analyzer->getParentType(analyzer->getCurrentClassName());
                 analyzer->processAttribute(analyzer->getParentClass(parentType), (FeatureAttribute*) feature);
             }

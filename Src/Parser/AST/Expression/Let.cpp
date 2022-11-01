@@ -26,7 +26,7 @@ namespace CoolCompiler {
 
         for(auto* innerLet : parameters){
             std::string innerLetType = innerLet->typeCheck(analyzer);
-            objectsTable->add(innerLet->getName(), &innerLetType);
+            objectsTable->add(innerLet->getName(), new std::string(innerLetType));
         }
 
         std::string resultType = expression->typeCheck(analyzer);

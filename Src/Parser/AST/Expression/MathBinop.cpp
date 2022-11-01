@@ -69,6 +69,10 @@ namespace CoolCompiler {
 
     std::string MathBinop::typeCheck(SemanticAnalyzer *analyzer) {
         switch (operation) {
+            case LT:
+                return boolOpCheck(analyzer, "<");
+            case GT:
+                return boolOpCheck(analyzer, ">");
             case LTOE:
                 return boolOpCheck(analyzer, "<=");
             case GTOE:

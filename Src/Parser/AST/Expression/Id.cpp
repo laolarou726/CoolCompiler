@@ -17,11 +17,14 @@ namespace CoolCompiler {
     }
 
     std::string Id::typeCheck(SemanticAnalyzer *analyzer) {
+        if(name == "self")
+            return "SELF_TYPE";
+
         auto* objectsTable = analyzer->getObjectsTable();
         std::string* result = objectsTable->lookup(name);
 
         if(result == nullptr){
-            std::string message = fmt::format("Tried to access undeclared identifier [{}].",
+            std::string message = fmt::format("The referenced object [{}] is undefined in relevant scopes.",
                                               name);
             analyzer->fail(message);
 

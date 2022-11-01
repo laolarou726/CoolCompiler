@@ -75,6 +75,6 @@ namespace CoolCompiler {
         if(!isDispatchValid)
             return "Object";
 
-        return returnType;
+        return returnType == "SELF_TYPE" ? exprType : returnType;
     }
 } // CoolCompiler
