@@ -23,8 +23,6 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getExpressionLeft() const;
         [[nodiscard]] Expression* getExpressionRight() const;
 
-        std::string eqCheck(SemanticAnalyzer* analyzer);
-        std::string boolOpCheck(SemanticAnalyzer* analyzer, const std::string &symbol);
         std::string intOpCheck(SemanticAnalyzer* analyzer, const std::string &symbol);
         std::string typeCheck(SemanticAnalyzer* analyzer) override;
 

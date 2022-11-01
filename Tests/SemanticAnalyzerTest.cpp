@@ -27,6 +27,7 @@ namespace {
         analyzer.doCheck();
     }
 
+    /*
     TEST(SemanticAnalyzerTest, arith) {
         run("arith");
     }
@@ -90,7 +91,11 @@ namespace {
     TEST(SemanticAnalyzerTest, life) {
         run("life");
     }
+     */
 
+
+
+    /*
     TEST(SemanticAnalyzerTest, list) {
         run("list");
     }
@@ -102,13 +107,13 @@ namespace {
     TEST(SemanticAnalyzerTest, palindrome) {
         run("palindrome");
     }
-
+*/
     TEST(SemanticAnalyzerTest, primes) {
         run("primes");
     }
-
+/*
     TEST(SemanticAnalyzerTest, sort_list) {
         run("sort_list");
     }
-
+*/
 }

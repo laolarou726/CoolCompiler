@@ -53,15 +53,24 @@ namespace CoolCompiler {
         void CASE(std::vector<Expression*> &container);
         void NEW(std::vector<Expression*> &container);
         void IS_VOID(std::vector<Expression*> &container);
+
+        // MATH OPS
         void PLUS(Expression* left, std::vector<Expression*> &container);
         void MINUS(Expression* left, std::vector<Expression*> &container);
         void STAR(Expression* left, std::vector<Expression*> &container);
         void SLASH(Expression* left, std::vector<Expression*> &container);
+        void MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container);
+        void MATH_OPS(Expression* left, std::vector<Expression*> &container);
+
+        // COMPARISON
         void TILDE(std::vector<Expression*> &container);
         void LESS_THAN(Expression* left, std::vector<Expression*> &container);
         void LESS_THAN_EQ(Expression* left, std::vector<Expression*> &container);
+        void GREATER_THAN(Expression* left, std::vector<Expression*> &container);
+        void GREATER_THAN_EQ(Expression* left, std::vector<Expression*> &container);
         void EQ(Expression* left, std::vector<Expression*> &container);
-        void MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container);
+        void COMPARISON(TokenType tokenType, Expression* left, std::vector<Expression*> &container);
+
         void NOT(std::vector<Expression*> &container);
         void PAREN(std::vector<Expression*> &container);
         void ID(std::vector<Expression*> &container);

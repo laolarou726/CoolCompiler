@@ -34,6 +34,7 @@
 #include "AST/Expression/String.h"
 #include "AST/Expression/Boolean.h"
 #include "../Dependencies/fmt/include/fmt/core.h"
+#include "AST/Expression/Comparison.h"
 
 namespace CoolCompiler {
     Parser::Parser(const std::vector<Token> &tokens) {
@@ -549,25 +550,25 @@ namespace CoolCompiler {
         MATH_BINOP(TokenType::SLASH, left, container);
     }
 
-    void Parser::TILDE(std::vector<Expression*> &container) {
-        expect(TokenType::TILDE);
+    void Parser::MATH_OPS(Expression *left, std::vector<Expression *> &container) {
+        std::vector<Expression*> resultExpr;
 
-        std::vector<Expression*> expressions;
-        EXPRESSION(expressions);
+        switch (peek().getTokenType()) {
+            case TokenType::PLUS:
+                PLUS(left, resultExpr);
+                break;
+            case TokenType::MINUS:
+                MINUS(left, resultExpr);
+                break;
+            case TokenType::STAR:
+                STAR(left, resultExpr);
+                break;
+            case TokenType::SLASH:
+                SLASH(left, resultExpr);
+                break;
+        }
 
-        container.emplace_back(new Tilde(expressions.front()));
-    }
-
-    void Parser::LESS_THAN(Expression* left, std::vector<Expression*> &container) {
-        MATH_BINOP(TokenType::LT, left, container);
-    }
-
-    void Parser::LESS_THAN_EQ(Expression* left, std::vector<Expression*> &container) {
-        MATH_BINOP(TokenType::LTOE, left, container);
-    }
-
-    void Parser::EQ(Expression* left, std::vector<Expression*> &container) {
-        MATH_BINOP(TokenType::EQ, left, container);
+        container.emplace_back(resultExpr.back());
     }
 
     void Parser::MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container) {
@@ -579,6 +580,46 @@ namespace CoolCompiler {
         Expression* right = expressions.front();
 
         container.emplace_back(new MathBinop(token.getLexeme(), tokenType, left, right));
+    }
+
+    void Parser::TILDE(std::vector<Expression*> &container) {
+        expect(TokenType::TILDE);
+
+        std::vector<Expression*> expressions;
+        EXPRESSION(expressions);
+
+        container.emplace_back(new Tilde(expressions.front()));
+    }
+
+    void Parser::LESS_THAN(Expression* left, std::vector<Expression*> &container) {
+        COMPARISON(TokenType::LT, left, container);
+    }
+
+    void Parser::LESS_THAN_EQ(Expression* left, std::vector<Expression*> &container) {
+        COMPARISON(TokenType::LTOE, left, container);
+    }
+
+    void Parser::EQ(Expression* left, std::vector<Expression*> &container) {
+        COMPARISON(TokenType::EQ, left, container);
+    }
+
+    void Parser::GREATER_THAN(Expression *left, std::vector<Expression *> &container) {
+        COMPARISON(TokenType::GT, left, container);
+    }
+
+    void Parser::GREATER_THAN_EQ(Expression *left, std::vector<Expression *> &container) {
+        COMPARISON(TokenType::GTOE, left, container);
+    }
+
+    void Parser::COMPARISON(TokenType tokenType, Expression *left, std::vector<Expression *> &container) {
+        Token token = expect(tokenType);
+
+        std::vector<Expression*> expressions;
+        EXPRESSION(expressions);
+
+        Expression* right = expressions.front();
+
+        container.emplace_back(new Comparison(token.getLexeme(), tokenType, left, right));
     }
 
     void Parser::NOT(std::vector<Expression*> &container) {
@@ -731,22 +772,22 @@ namespace CoolCompiler {
 
         switch (peek().getTokenType()) {
             case TokenType::PLUS:
-                PLUS(expr, container);
-                break;
             case TokenType::MINUS:
-                MINUS(expr, container);
-                break;
             case TokenType::STAR:
-                STAR(expr, container);
-                break;
             case TokenType::SLASH:
-                SLASH(expr, container);
+                MATH_OPS(expr, container);
                 break;
             case TokenType::LT:
                 LESS_THAN(expr, container);
                 break;
             case TokenType::LTOE:
                 LESS_THAN_EQ(expr, container);
+                break;
+            case TokenType::GT:
+                GREATER_THAN(expr, container);
+                break;
+            case TokenType::GTOE:
+                GREATER_THAN_EQ(expr, container);
                 break;
             case TokenType::EQ:
                 EQ(expr, container);

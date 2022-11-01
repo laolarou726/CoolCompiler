@@ -336,7 +336,7 @@ namespace CoolCompiler {
 
             auto* innerAttr = (FeatureAttribute*) feature;
 
-            if(innerAttr->getName() == innerAttr->getName()) isInheritAttr = true;
+            if(innerAttr->getName() == attr->getName()) isInheritAttr = true;
         }
 
         if(isInheritAttr){
