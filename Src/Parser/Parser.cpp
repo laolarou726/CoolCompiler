@@ -551,33 +551,32 @@ namespace CoolCompiler {
     }
 
     void Parser::MATH_OPS(Expression *left, std::vector<Expression *> &container) {
-        std::vector<Expression*> resultExpr;
-
         switch (peek().getTokenType()) {
             case TokenType::PLUS:
-                PLUS(left, resultExpr);
+                PLUS(left, container);
                 break;
             case TokenType::MINUS:
-                MINUS(left, resultExpr);
+                MINUS(left, container);
                 break;
             case TokenType::STAR:
-                STAR(left, resultExpr);
+                STAR(left, container);
                 break;
             case TokenType::SLASH:
-                SLASH(left, resultExpr);
+                SLASH(left, container);
                 break;
         }
-
-        container.emplace_back(resultExpr.back());
     }
 
     void Parser::MATH_BINOP(TokenType tokenType, Expression* left, std::vector<Expression*> &container) {
         Token token = expect(tokenType);
 
         std::vector<Expression*> expressions;
+        if(!container.empty() && container.front()->getIdentifier() == "MATH")
+            expressions.emplace_back(container.front());
+
         EXPRESSION(expressions);
 
-        Expression* right = expressions.front();
+        Expression* right = expressions.back();
 
         container.emplace_back(new MathBinop(token.getLexeme(), tokenType, left, right));
     }
@@ -793,23 +792,39 @@ namespace CoolCompiler {
         }
 
         Expression* expr = isMethodDispatch ? expressions.back() : left;
+        std::vector<Expression*> preResultExpressions;
 
         switch (peek().getTokenType()) {
             case TokenType::PLUS:
             case TokenType::MINUS:
             case TokenType::STAR:
             case TokenType::SLASH:
-                MATH_OPS(expr, container);
+                preResultExpressions.emplace_back(new PlaceholderExpr("MATH"));
+                MATH_OPS(expr, preResultExpressions);
                 break;
+            default:
+                preResultExpressions.emplace_back(expr);
+                break;
+        }
+
+        bool isInMathExpr = !container.empty() && container.front()->getIdentifier() == "MATH";
+        Expression* preResultExpression = preResultExpressions.back();
+
+        if(isInMathExpr){
+            container.emplace_back(preResultExpression);
+            return;
+        }
+
+        switch (peek().getTokenType()) {
             case TokenType::LT:
             case TokenType::LTOE:
             case TokenType::GT:
             case TokenType::GTOE:
             case TokenType::EQ:
-                COMPARISON_OPS(expr, container);
+                COMPARISON_OPS(preResultExpression, container);
                 break;
             default:
-                container.emplace_back(expr);
+                container.emplace_back(preResultExpression);
                 break;
         }
     }

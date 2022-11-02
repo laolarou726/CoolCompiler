@@ -44,6 +44,8 @@ namespace CoolCompiler {
         if(exprType != "SELF_TYPE" && !analyzer->isTypeDefined(exprType))
             return "Object";
 
+        exprType = exprType == "SELF_TYPE" ? analyzer->getCurrentClassName() : exprType;
+
         if(!analyzer->isSubtype(exprType, type)){
             std::string message = fmt::format("Expression type <{}> is not compatible with declared static dispatch type <{}>.",
                                                exprType, type);
@@ -76,7 +78,10 @@ namespace CoolCompiler {
 
         while(index < arguments.size() && index < formals.size()){
             std::string declaredArgType = formals[index]->getType();
+            declaredArgType = declaredArgType == "SELF_TYPE" ? analyzer->getCurrentClassName() : declaredArgType;
+
             std::string actualArgType = arguments[index]->typeCheck(analyzer);
+            actualArgType = actualArgType == "SELF_TYPE" ? analyzer->getCurrentClassName() : actualArgType;
 
             if(!analyzer->isSubtype(actualArgType, declaredArgType)){
                 isDispatchValid = false;

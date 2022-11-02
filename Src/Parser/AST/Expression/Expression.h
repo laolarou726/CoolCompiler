@@ -20,6 +20,13 @@ namespace CoolCompiler {
         virtual std::string typeCheck(SemanticAnalyzer* analyzer) = 0;
     };
 
+    class PlaceholderExpr : public Expression{
+    public:
+        explicit PlaceholderExpr(const std::string &id) : Expression(id){}
+        void print(int depth) override{}
+        std::string typeCheck(CoolCompiler::SemanticAnalyzer *analyzer) override{return "";}
+    };
+
 } // CoolCompiler
 
 #endif //COOLCOMPILER_EXPRESSION_H

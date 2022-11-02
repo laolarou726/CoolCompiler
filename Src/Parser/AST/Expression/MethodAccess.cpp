@@ -59,7 +59,10 @@ namespace CoolCompiler {
 
         while(index < arguments.size() && index < formals.size()){
             std::string declaredArgType = formals[index]->getType();
+            declaredArgType = declaredArgType == "SELF_TYPE" ? analyzer->getCurrentClassName() : declaredArgType;
+
             std::string actualArgType = arguments[index]->typeCheck(analyzer);
+            actualArgType = actualArgType == "SELF_TYPE" ? analyzer->getCurrentClassName() : actualArgType;
 
             if(!analyzer->isSubtype(actualArgType, declaredArgType)){
                 isDispatchValid = false;
