@@ -1,6 +1,6 @@
 # CoolCompiler [![CodeQL](https://github.com/laolarou726/CoolCompiler/actions/workflows/codeql.yml/badge.svg)](https://github.com/laolarou726/CoolCompiler/actions/workflows/codeql.yml)
 
-Stanford CS1/CS143 Compilers Course Project - Cool compiler
+Stanford CS1/CS143 Compilers Course Project - Cool compiler with LLVM backend
 
 ## Development Status
 
