@@ -6,7 +6,10 @@
 #define COOLCOMPILER_EXPRESSION_H
 
 #include "../AST.h"
-#include <llvm-15/llvm/IR/Value.h>
+
+namespace llvm {
+    class Value;
+}
 
 namespace CoolCompiler {
 

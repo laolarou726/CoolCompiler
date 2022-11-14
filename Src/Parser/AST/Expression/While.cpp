@@ -35,7 +35,6 @@ namespace CoolCompiler {
     }
 
     llvm::Value *While::visit(CoolCompiler::CodeGenerator *generator) {
-        /*
         auto* context = generator->getContext();
         auto* codeMap = generator->getCodeMap();
         auto* builder = generator->getBuilder();
@@ -63,6 +62,5 @@ namespace CoolCompiler {
         builder->SetInsertPoint(loop_done_bb);
 
         while_expr.SetLlvmValue(LlvmDefaultVal("Object"));
-         */
     }
 } // CoolCompiler

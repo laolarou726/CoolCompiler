@@ -6,7 +6,6 @@ find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
-
 set(CMAKE_CXX_STANDARD 17)
 
 # Set your project compile flags.
@@ -23,20 +22,28 @@ file(COPY Examples DESTINATION ${CMAKE_BINARY_DIR})
 add_subdirectory(Dependencies/fmt EXCLUDE_FROM_ALL)
 
 file(GLOB LEXER_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Lexer/*.cpp)
+        ${PROJECT_SOURCE_DIR}/Lexer/*.h
+        ${PROJECT_SOURCE_DIR}/Lexer/*.cpp)
 
 file(GLOB PARSER_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Parser/*.cpp)
+        ${PROJECT_SOURCE_DIR}/Parser/*.h
+        ${PROJECT_SOURCE_DIR}/Parser/*.cpp
+        ${PROJECT_SOURCE_DIR}/Parser/AST/*.h
+        ${PROJECT_SOURCE_DIR}/Parser/AST/*.cpp
+        ${PROJECT_SOURCE_DIR}/Parser/AST/Expression/*.h
+        ${PROJECT_SOURCE_DIR}/Parser/AST/Expression/*.cpp
+        ${PROJECT_SOURCE_DIR}/Parser/AST/Feature/*.h
+        ${PROJECT_SOURCE_DIR}/Parser/AST/Feature/*.cpp)
 
 file(GLOB SEMANTIC_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/Semantic/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/Semantic/*.cpp)
+        ${PROJECT_SOURCE_DIR}/Semantic/*.h
+        ${PROJECT_SOURCE_DIR}/Semantic/*.cpp
+        ${PROJECT_SOURCE_DIR}/Semantic/SymbolTable/*.h
+        ${PROJECT_SOURCE_DIR}/Semantic/SymbolTable/*.cpp)
 
 file(GLOB CODEGEN_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGen/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/CodeGen/*.cpp)
+        ${PROJECT_SOURCE_DIR}/CodeGen/*.h
+        ${PROJECT_SOURCE_DIR}/CodeGen/*.cpp)
 
 file(GLOB UTILS_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/Utils/*.h
