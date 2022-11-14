@@ -55,20 +55,22 @@ namespace CoolCompiler {
         FeatureMethod* lookupMethod(const std::string &className, const std::string &method);
 
         bool isSubtype(const std::string &candidate, const std::string &target);
-
         void ensureAttributesUnique(Class* class_);
-
         void buildAttributeScopes(const Class* class_);
-
         void processMethod(Class* class_, FeatureMethod* method, FeatureMethod* parentMethod);
-
         std::string getParentType(const std::string &type);
-
         Class* getParentClass(const std::string &type);
-
         void setCurrentClassName(const std::string &name);
-
         void processAttribute(Class* class_, FeatureAttribute* attr);
+
+        [[nodiscard]] Class* GET_OBJECT_CLASS() const;
+        [[nodiscard]] Class* GET_IO_CLASS() const;
+        [[nodiscard]] Class* GET_INT_CLASS() const;
+        [[nodiscard]] Class* GET_BOOL_CLASS() const;
+        [[nodiscard]] Class* GET_STRING_CLASS() const;
+
+        [[nodiscard]] Program* getProgram() const;
+        [[nodiscard]] std::vector<Class*> getInheritList(Class* class_);
     };
 
 } // CoolCompiler

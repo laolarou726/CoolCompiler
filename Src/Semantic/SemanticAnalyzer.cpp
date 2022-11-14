@@ -434,11 +434,58 @@ namespace CoolCompiler {
     }
 
     Class *SemanticAnalyzer::getParentClass(const std::string &type) {
+        if(type.empty())
+            return nullptr;
+
         return classLookups[type];
     }
 
     void SemanticAnalyzer::setCurrentClassName(const std::string &name) {
         currentClassName = name;
+    }
+
+    std::vector<Class *> SemanticAnalyzer::getInheritList(Class *class_) {
+        std::vector<Class*> result;
+
+        Class* lastClass = nullptr;
+        if(!class_->getInherits().empty()){
+            lastClass = getParentClass(class_->getName());
+            result.emplace_back(lastClass);
+
+            while(!lastClass->getInherits().empty()){
+                lastClass = getParentClass(class_->getName());
+                result.emplace_back(lastClass);
+            }
+        }
+
+        std::reverse(result.begin(), result.end());
+        result.emplace_back(class_);
+
+        return result;
+    }
+
+    Class *SemanticAnalyzer::GET_OBJECT_CLASS() const {
+        return OBJECT_CLASS;
+    }
+
+    Class *SemanticAnalyzer::GET_IO_CLASS() const {
+        return IO_CLASS;
+    }
+
+    Class *SemanticAnalyzer::GET_INT_CLASS() const {
+        return INT_CLASS;
+    }
+
+    Class *SemanticAnalyzer::GET_BOOL_CLASS() const {
+        return BOOL_CLASS;
+    }
+
+    Class *SemanticAnalyzer::GET_STRING_CLASS() const {
+        return STRING_CLASS;
+    }
+
+    Program *SemanticAnalyzer::getProgram() const {
+        return program;
     }
 
 } // CoolCompiler
