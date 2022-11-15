@@ -11,6 +11,7 @@
 #include "../Parser/AST/Class.h"
 #include "../Parser/AST/Program.h"
 #include "VTable.h"
+#include "CStd.h"
 
 namespace CoolCompiler {
 
@@ -27,13 +28,16 @@ namespace CoolCompiler {
         llvm::LLVMContext* context;
         llvm::Module* module;
         llvm::IRBuilder<>* builder;
+
+        FeatureMethod* currentMethod;
         Class* currentClass;
+
         SemanticAnalyzer* analyzer;
+        CStd* cStd;
 
         llvm::FunctionType* getConstructorFunctionType(const Class* class_);
         llvm::FunctionType* getCopyConstructorFunctionType();
 
-        llvm::Type* LLVM_BASIC_OR_CLASS_PTR_TYPE(const std::string& type_name);
         [[nodiscard]] bool needVTable(const std::string &type) const;
         [[nodiscard]] Class* getClass(const std::string &name) const;
 
@@ -52,6 +56,9 @@ namespace CoolCompiler {
             return builder->getVoidTy();
         }
 
+        llvm::Type* LLVM_BASIC_OR_CLASS_PTR_TYPE(const std::string& type_name);
+        llvm::Function* getCurrentLLVMFunction();
+        llvm::Value* getLLVMDefault(const std::string& type);
         [[nodiscard]] llvm::ConstantInt* toLLVMInt32(int num) const;
         [[nodiscard]] llvm::Type* toBasicType(const std::string &class_) const;
         [[nodiscard]] llvm::StructType* toLLVMClass(const std::string& className);

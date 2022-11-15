@@ -39,28 +39,25 @@ namespace CoolCompiler {
         auto* codeMap = generator->getCodeMap();
         auto* builder = generator->getBuilder();
 
-        llvm::BasicBlock* loop_cond_bb =
-                llvm::BasicBlock::Create(context, "loop-cond", codeMap.CurLlvmFunc());
+        llvm::BasicBlock* loopConditionBlock =
+                llvm::BasicBlock::Create(*context, "loop-cond", codeMap->getCurrentLLVMFunction());
+        llvm::BasicBlock* loopBodyBlock =
+                llvm::BasicBlock::Create(*context, "loop-body", codeMap->getCurrentLLVMFunction());
+        llvm::BasicBlock* loopDoneBlock =
+                llvm::BasicBlock::Create(*context, "loop-done", codeMap->getCurrentLLVMFunction());
 
-        llvm::BasicBlock* loop_body_bb =
-                llvm::BasicBlock::Create(context, "loop-body", codeMap.CurLlvmFunc());
+        builder->CreateBr(loopConditionBlock);
+        builder->SetInsertPoint(loopConditionBlock);
 
-        llvm::BasicBlock* loop_done_bb =
-                llvm::BasicBlock::Create(context, "loop-done", codeMap.CurLlvmFunc());
+        llvm::Value* cond_val = getCondition()->visit(generator);
+        builder->CreateCondBr(cond_val, loopBodyBlock, loopDoneBlock);
 
-        builder->CreateBr(loop_cond_bb);
+        builder->SetInsertPoint(loopBodyBlock);
+        body->visit(generator);
+        builder->CreateBr(loopConditionBlock);
 
-        builder->SetInsertPoint(loop_cond_bb);
-        getCondition()->Accept(*this);
-        llvm::Value* cond_val = while_expr.GetConditionExpr()->LlvmValue();
-        builder->CreateCondBr(cond_val, loop_body_bb, loop_done_bb);
+        builder->SetInsertPoint(loopDoneBlock);
 
-        builder->SetInsertPoint(loop_body_bb);
-        while_expr.GetLoopExpr()->Accept(*this);
-        builder->CreateBr(loop_cond_bb);
-
-        builder->SetInsertPoint(loop_done_bb);
-
-        while_expr.SetLlvmValue(LlvmDefaultVal("Object"));
+        return codeMap->getLLVMDefault("Object");
     }
 } // CoolCompiler

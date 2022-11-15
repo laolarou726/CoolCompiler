@@ -4,6 +4,7 @@
 
 #include "Not.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "../../../CodeGen/CodeGenerator.h"
 
 namespace CoolCompiler {
     Not::Not(Expression *expression) : Expression("not") {
@@ -25,5 +26,11 @@ namespace CoolCompiler {
         }
 
         return "Bool";
+    }
+
+    llvm::Value *Not::visit(CoolCompiler::CodeGenerator *generator) {
+        llvm::Value* exprVal = expression->visit(generator);
+
+        return generator->getBuilder()->CreateNot(exprVal);
     }
 } // CoolCompiler

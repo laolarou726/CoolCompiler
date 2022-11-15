@@ -5,9 +5,11 @@
 #ifndef COOLCOMPILER_COMPARISON_H
 #define COOLCOMPILER_COMPARISON_H
 
+#include <llvm/IR/IRBuilder.h>
 #include "Expression.h"
 #include "fmt/format.h"
 #include "../../../Lexer/Token.h"
+#include "../../../CodeGen/CStd.h"
 
 namespace CoolCompiler {
 
@@ -22,10 +24,13 @@ namespace CoolCompiler {
         [[nodiscard]] TokenType getOperation() const;
         [[nodiscard]] Expression* getExpressionLeft() const;
         [[nodiscard]] Expression* getExpressionRight() const;
+
         std::string eqCheck(SemanticAnalyzer* analyzer);
         std::string boolOpCheck(SemanticAnalyzer* analyzer, const std::string &symbol);
+        llvm::Value* getLLVMEq(CodeMap* codeMap, CStd* cStd, llvm::IRBuilder<>* builder, llvm::Value* lhs, llvm::Value* rhs);
 
         std::string typeCheck(SemanticAnalyzer* analyzer) override;
+        llvm::Value * visit(CoolCompiler::CodeGenerator *generator) override;
 
         void print(int depth) override{
             printTab(depth);

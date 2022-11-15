@@ -57,5 +57,10 @@ namespace CoolCompiler {
         return codeMap;
     }
 
+    llvm::Value *CodeGenerator::toLLVMIsVoid(llvm::Value *val) {
+        return builder->CreateICmpEQ(builder->CreatePtrToInt(val, builder->getInt32Ty()),
+                                     llvm::ConstantInt::get(*context, llvm::APInt(32, 0, true)));
+    }
+
 
 } // CoolCompiler

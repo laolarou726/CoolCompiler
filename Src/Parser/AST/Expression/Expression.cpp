@@ -12,4 +12,12 @@ namespace CoolCompiler {
     Expression::Expression() : AST("expression") {
 
     }
+
+    void Expression::setExpressionType(const std::string &type) {
+        this->evalExprType = type;
+    }
+
+    std::string Expression::getExpressionType() const {
+        return this->evalExprType;
+    }
 } // CoolCompiler

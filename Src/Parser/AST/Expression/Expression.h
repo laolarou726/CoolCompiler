@@ -17,13 +17,18 @@ namespace CoolCompiler {
     class CodeGenerator;
 
     class Expression : public AST {
+    private:
+        std::string evalExprType;
     protected:
         explicit Expression(const std::string &identifier);
+        void setExpressionType(const std::string &type);
     public:
         Expression();
         void print(int depth) override = 0;
         virtual std::string typeCheck(SemanticAnalyzer* analyzer) = 0;
         virtual llvm::Value* visit(CodeGenerator* generator) = 0;
+
+        [[nodiscard]]std::string getExpressionType() const;
     };
 
     class PlaceholderExpr : public Expression{

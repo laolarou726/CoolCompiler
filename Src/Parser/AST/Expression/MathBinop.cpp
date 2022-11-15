@@ -4,6 +4,7 @@
 
 #include "MathBinop.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "../../../CodeGen/CodeGenerator.h"
 
 namespace CoolCompiler {
     MathBinop::MathBinop(const std::string &token, TokenType operation, Expression *expressionLeft,
@@ -50,6 +51,23 @@ namespace CoolCompiler {
                 return intOpCheck(analyzer, "*");
             case SLASH:
                 return intOpCheck(analyzer, "/");
+        }
+    }
+
+    llvm::Value *MathBinop::visit(CoolCompiler::CodeGenerator *generator) {
+        llvm::Value* leftExprValue = expressionLeft->visit(generator);
+        llvm::Value* rightExprValue = expressionRight->visit(generator);
+        auto* builder = generator->getBuilder();
+
+        switch (operation) {
+            case PLUS:
+                return builder->CreateAdd(leftExprValue, rightExprValue);
+            case MINUS:
+                return builder->CreateSub(leftExprValue, rightExprValue);
+            case STAR:
+                return builder->CreateMul(leftExprValue, rightExprValue);
+            case SLASH:
+                return builder->CreateSDiv(leftExprValue, rightExprValue);
         }
     }
 } // CoolCompiler

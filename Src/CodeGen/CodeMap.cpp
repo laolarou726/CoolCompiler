@@ -272,4 +272,26 @@ namespace CoolCompiler {
         return llvm::ConstantInt::get(*context, llvm::APInt(32, num, true));
     }
 
+    llvm::Function *CodeMap::getCurrentLLVMFunction() {
+        return functions.at(currentMethod);
+    }
+
+    llvm::Value *CodeMap::getLLVMDefault(const std::string &type) {
+        if (type == "Int")
+            return toLLVMInt32(0);
+
+        if (type == "Bool")
+            return llvm::ConstantInt::get(*context, llvm::APInt(1, 0, false));
+
+        if (type == "String") {
+            llvm::Value* malloc_val = builder->CreateCall(cStd->GCMALLOCSTRING_FUNC(), {toLLVMInt32(1)});
+            llvm::Value* str_global = builder->CreateGlobalStringPtr("");
+            builder->CreateCall(cStd->STRCPY_FUNC(), {malloc_val, str_global});
+
+            return malloc_val;
+        }
+
+        return llvm::ConstantPointerNull::get(toLLVMClass(type)->getPointerTo());
+    }
+
 } // CoolCompiler

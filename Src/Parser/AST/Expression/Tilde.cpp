@@ -4,6 +4,7 @@
 
 #include "Tilde.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "../../../CodeGen/CodeGenerator.h"
 
 namespace CoolCompiler {
     Tilde::Tilde(Expression *expression) : Expression("tilde") {
@@ -24,5 +25,12 @@ namespace CoolCompiler {
         }
 
         return "Int";
+    }
+
+    llvm::Value *Tilde::visit(CoolCompiler::CodeGenerator *generator) {
+        CodeMap* codeMap = generator->getCodeMap();
+        llvm::Value* exprVal = expression->visit(generator);
+
+        return generator->getBuilder()->CreateMul(codeMap->toLLVMInt32(-1), exprVal);
     }
 } // CoolCompiler

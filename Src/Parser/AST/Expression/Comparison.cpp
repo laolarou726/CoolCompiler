@@ -4,6 +4,7 @@
 
 #include "Comparison.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "../../../CodeGen/CodeGenerator.h"
 
 namespace CoolCompiler {
     Comparison::Comparison(const std::string &token, TokenType operation, Expression *expressionLeft, Expression *expressionRight)
@@ -65,6 +66,61 @@ namespace CoolCompiler {
                 return boolOpCheck(analyzer, ">=");
             case EQ:
                 return eqCheck(analyzer);
+        }
+    }
+
+    llvm::Value *Comparison::getLLVMEq(CodeMap* codeMap, CStd* cStd, llvm::IRBuilder<>* builder, llvm::Value* lhs, llvm::Value* rhs) {
+        std::string lhsType = expressionLeft->getExpressionType();
+        std::string rhsType = expressionRight->getExpressionType();
+
+        bool both_non_basic = !IsBasicType(lhsType) && !IsBasicType(rhsType);
+        bool both_string = lhsType == "String" && rhsType == "String";
+
+        llvm::AllocaInst* alloca_inst = builder->CreateAlloca(codeMap->LLVM_BASIC_OR_CLASS_PTR_TYPE(lhsType));
+        builder->CreateStore(lhs, alloca_inst);
+
+        llvm::Value* root = nullptr;
+        if (both_non_basic) {
+            root = AddGcRoot(alloca_inst);
+        } else if (both_string) {
+            builder->CreateCall(cStd->GCADDSTRINGROOT_FUNC(), {alloca_inst});
+        }
+
+        if (both_non_basic) {
+            builder->CreateCall(cStd->GetGcRemoveRootFunc(), {root});
+        } else if (both_string) {
+            builder->CreateCall(cStd->GCREMOVESTRINGROOT_FUNC(), {alloca_inst});
+        }
+
+        if (lhsType == "Int" || lhsType == "Bool") {
+            return builder->CreateICmpEQ(lhs, rhs);
+        }
+
+        if (lhsType == "String") {
+            return GenStrEqCmp(lhs, rhs);
+        }
+
+        return builder->CreateICmpEQ(
+                builder->CreatePtrToInt(lhs, builder->getInt32Ty()),
+                builder->CreatePtrToInt(rhs, builder->getInt32Ty()));
+    }
+
+    llvm::Value *Comparison::visit(CoolCompiler::CodeGenerator *generator) {
+        llvm::Value* leftExprValue = expressionLeft->visit(generator);
+        llvm::Value* rightExprValue = expressionRight->visit(generator);
+        auto* builder = generator->getBuilder();
+
+        switch (operation) {
+            case LT:
+                return builder->CreateICmpSLT(leftExprValue, rightExprValue);
+            case GT:
+                return builder->CreateICmpSGT(leftExprValue, rightExprValue);
+            case LTOE:
+                return builder->CreateICmpSLE(leftExprValue, rightExprValue);
+            case GTOE:
+                return builder->CreateICmpSGE(leftExprValue, rightExprValue);
+            case EQ:
+                return getLLVMEq(generator->getCStd(), builder, leftExprValue, rightExprValue);
         }
     }
 } // CoolCompiler

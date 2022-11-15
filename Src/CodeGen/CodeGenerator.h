@@ -25,6 +25,8 @@ namespace CoolCompiler {
     public:
         explicit CodeGenerator(Program* program);
         void generate(bool gcVerbose);
+
+        llvm::Value* toLLVMIsVoid(llvm::Value* val);
         [[nodiscard]] llvm::LLVMContext* getContext() const;
         [[nodiscard]] llvm::Module* getModule() const;
         [[nodiscard]] llvm::IRBuilder<>* getBuilder() const;
