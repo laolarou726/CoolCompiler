@@ -27,7 +27,10 @@ namespace CoolCompiler {
 
         std::string eqCheck(SemanticAnalyzer* analyzer);
         std::string boolOpCheck(SemanticAnalyzer* analyzer, const std::string &symbol);
-        llvm::Value* getLLVMEq(CodeMap* codeMap, CStd* cStd, llvm::IRBuilder<>* builder, llvm::Value* lhs, llvm::Value* rhs);
+        llvm::Value* getLLVMEq(SemanticAnalyzer* analyzer,
+                               CoolCompiler::CodeGenerator *generator,
+                               llvm::Value* lhs,
+                               llvm::Value* rhs);
 
         std::string typeCheck(SemanticAnalyzer* analyzer) override;
         llvm::Value * visit(CoolCompiler::CodeGenerator *generator) override;

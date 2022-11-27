@@ -35,4 +35,8 @@ namespace CoolCompiler {
 
         return resultType;
     }
+
+    llvm::Value *Let::visit(CoolCompiler::CodeGenerator *generator) {
+
+    }
 } // CoolCompiler

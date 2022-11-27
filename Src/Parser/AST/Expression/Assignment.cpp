@@ -4,6 +4,7 @@
 
 #include "Assignment.h"
 #include "../../../Semantic/SemanticAnalyzer.h"
+#include "../../../CodeGen/CodeGenerator.h"
 
 namespace CoolCompiler {
     Assignment::Assignment(Id* id, Expression* expression) : Expression("assignment")  {
@@ -50,5 +51,66 @@ namespace CoolCompiler {
         }
 
         return exprType;
+    }
+
+    llvm::Value *Assignment::visit(CoolCompiler::CodeGenerator *generator) {
+        auto* builder = generator->getBuilder();
+
+        std::string exprType = expression->getExpressionType();
+        llvm::Value* resultValue = expression->visit(generator);
+        llvm::Value* assign_lhs_ptr = getAssignmentLhsPtr(generator);
+
+        if (SemanticAnalyzer::isPrimitive(exprType)) {
+            auto* lhs_ty = assign_lhs_ptr->getType()->getPointerElementType();
+
+            const bool lhs_is_basic_ty = lhs_ty == builder->getInt1Ty() ||
+                                         lhs_ty == builder->getInt32Ty() ||
+                                         lhs_ty == builder->getInt8PtrTy();
+
+            if (!lhs_is_basic_ty) {
+                resultValue = generator->covertValue(resultValue, exprType, "Object");
+            }
+        } else if (assign_lhs_ptr->getType()->getPointerElementType() != resultValue->getType()) {
+            resultValue = builder->CreateBitCast(
+                    resultValue, assign_lhs_ptr->getType()->getPointerElementType());
+        }
+
+        builder->CreateStore(resultValue, assign_lhs_ptr);
+
+        return resultValue;
+    }
+
+    llvm::Value *Assignment::getAssignmentLhsPtr(CoolCompiler::CodeGenerator *generator) {
+        /*
+        const auto in_scope_var = in_scope_vars_.find(assign.GetId());
+        if (in_scope_var != in_scope_vars_.end()) {
+            return in_scope_var->second.top();
+        }
+        */
+
+        auto* analyzer = generator->getAnalyzer();
+        auto* codeMap = generator->getCodeMap();
+        auto* builder = generator->getBuilder();
+
+        for (Class* inheritClass : analyzer->getInheritList(codeMap->getCurrentClass())) {
+            for (FeatureBase* feature : inheritClass->getFeatures()) {
+                if(dynamic_cast<FeatureMethod*>(feature) != nullptr)
+                    continue;
+
+                auto* attr = (FeatureAttribute*) feature;
+
+                llvm::Value* cur_class_val = codeMap->getCurrentLLVMFunction()->args().begin();
+                cur_class_val = generator->covertValue(cur_class_val, codeMap->getCurrentClass()->getName(),
+                                            inheritClass->getName());
+
+                if (attr->getName() == id->getName()) {
+                    return builder->CreateStructGEP(codeMap->toLLVMClass(inheritClass->getName()),
+                                                    cur_class_val,
+                                                    StructAttrIndex(inheritClass, attr));
+                }
+            }
+        }
+
+        return nullptr;
     }
 } // CoolCompiler

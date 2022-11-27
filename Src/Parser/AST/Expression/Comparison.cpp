@@ -69,11 +69,18 @@ namespace CoolCompiler {
         }
     }
 
-    llvm::Value *Comparison::getLLVMEq(CodeMap* codeMap, CStd* cStd, llvm::IRBuilder<>* builder, llvm::Value* lhs, llvm::Value* rhs) {
+    llvm::Value *Comparison::getLLVMEq(SemanticAnalyzer* analyzer,
+                                       CoolCompiler::CodeGenerator *generator,
+                                       llvm::Value* lhs,
+                                       llvm::Value* rhs) {
+        auto* builder = generator->getBuilder();
+        auto* codeMap = generator->getCodeMap();
+        auto* cStd = generator->getCStd();
+
         std::string lhsType = expressionLeft->getExpressionType();
         std::string rhsType = expressionRight->getExpressionType();
 
-        bool both_non_basic = !IsBasicType(lhsType) && !IsBasicType(rhsType);
+        bool both_non_basic = !analyzer->isPrimitive(lhsType) && !analyzer->isPrimitive(rhsType);
         bool both_string = lhsType == "String" && rhsType == "String";
 
         llvm::AllocaInst* alloca_inst = builder->CreateAlloca(codeMap->LLVM_BASIC_OR_CLASS_PTR_TYPE(lhsType));
@@ -81,13 +88,13 @@ namespace CoolCompiler {
 
         llvm::Value* root = nullptr;
         if (both_non_basic) {
-            root = AddGcRoot(alloca_inst);
+            root = generator->addGCRoot(alloca_inst);
         } else if (both_string) {
             builder->CreateCall(cStd->GCADDSTRINGROOT_FUNC(), {alloca_inst});
         }
 
         if (both_non_basic) {
-            builder->CreateCall(cStd->GetGcRemoveRootFunc(), {root});
+            builder->CreateCall(cStd->GCREMOVEROOT_FUNC(), {root});
         } else if (both_string) {
             builder->CreateCall(cStd->GCREMOVESTRINGROOT_FUNC(), {alloca_inst});
         }
@@ -97,7 +104,7 @@ namespace CoolCompiler {
         }
 
         if (lhsType == "String") {
-            return GenStrEqCmp(lhs, rhs);
+            return generator->getLLVMStrEqCmp(lhs, rhs);
         }
 
         return builder->CreateICmpEQ(
@@ -120,7 +127,7 @@ namespace CoolCompiler {
             case GTOE:
                 return builder->CreateICmpSGE(leftExprValue, rightExprValue);
             case EQ:
-                return getLLVMEq(generator->getCStd(), builder, leftExprValue, rightExprValue);
+                return getLLVMEq(new SemanticAnalyzer(), generator, leftExprValue, rightExprValue);
         }
     }
 } // CoolCompiler

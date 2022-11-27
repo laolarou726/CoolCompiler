@@ -9,58 +9,7 @@
 namespace CoolCompiler {
 
     SemanticAnalyzer::SemanticAnalyzer() {
-        //OBJECT CLASS
-        std::vector<FeatureBase*> objectFeatures;
-        objectFeatures.emplace_back(new FeatureMethod("abort", "Object", nullptr));
-        objectFeatures.emplace_back(new FeatureMethod("type_name", "String", nullptr));
-        objectFeatures.emplace_back(new FeatureMethod("copy", "SELF_TYPE", nullptr));
-
-        OBJECT_CLASS = new Class("Object", objectFeatures, "");
-
-        //IO CLASS
-        std::vector<FeatureBase*> ioFeatures;
-
-        std::vector<Formal*> outStringArguments;
-        outStringArguments.emplace_back(new Formal("arg", "String"));
-        ioFeatures.emplace_back(new FeatureMethod("out_string", "SELF_TYPE", nullptr, outStringArguments));
-
-        std::vector<Formal*> outIntArguments;
-        outIntArguments.emplace_back(new Formal("arg", "Int"));
-        ioFeatures.emplace_back(new FeatureMethod("out_int", "SELF_TYPE", nullptr, outIntArguments));
-
-        ioFeatures.emplace_back(new FeatureMethod("in_string", "String", nullptr));
-        ioFeatures.emplace_back(new FeatureMethod("in_int", "Int", nullptr));
-
-        IO_CLASS = new Class("IO", ioFeatures, OBJECT_CLASS->getName());
-
-        //INT CLASS
-        std::vector<FeatureBase*> intFeatures;
-        intFeatures.emplace_back(new FeatureAttribute("val", "Int"));
-
-        INT_CLASS = new Class("Int", intFeatures, OBJECT_CLASS->getName());
-
-        //BOOL CLASS
-        std::vector<FeatureBase*> boolFeatures;
-        boolFeatures.emplace_back(new FeatureAttribute("val", "_prim_slot"));
-
-        BOOL_CLASS = new Class("Bool", boolFeatures, OBJECT_CLASS->getName());
-
-        //STRING CLASS
-        std::vector<FeatureBase*> stringFeatures;
-        stringFeatures.emplace_back(new FeatureAttribute("val", INT_CLASS->getName()));
-        stringFeatures.emplace_back(new FeatureAttribute("str_field", "_prim_slot"));
-        stringFeatures.emplace_back(new FeatureMethod("length", INT_CLASS->getName(), nullptr));
-
-        std::vector<Formal*> concatArguments;
-        concatArguments.emplace_back(new Formal("arg", "String"));
-        stringFeatures.emplace_back(new FeatureMethod("concat", "String", nullptr, concatArguments));
-
-        std::vector<Formal*> substrArguments;
-        substrArguments.emplace_back(new Formal("arg", INT_CLASS->getName()));
-        substrArguments.emplace_back(new Formal("arg2", INT_CLASS->getName()));
-        stringFeatures.emplace_back(new FeatureMethod("substr", "String", nullptr, substrArguments));
-
-        STRING_CLASS = new Class("String", stringFeatures, OBJECT_CLASS->getName());
+        initBaseTypes();
 
         //ADD
         classLookups[OBJECT_CLASS->getName()] = OBJECT_CLASS;
@@ -486,6 +435,61 @@ namespace CoolCompiler {
 
     Program *SemanticAnalyzer::getProgram() const {
         return program;
+    }
+
+    void SemanticAnalyzer::initBaseTypes() {
+        //OBJECT CLASS
+        std::vector<FeatureBase*> objectFeatures;
+        objectFeatures.emplace_back(new FeatureMethod("abort", "Object", nullptr));
+        objectFeatures.emplace_back(new FeatureMethod("type_name", "String", nullptr));
+        objectFeatures.emplace_back(new FeatureMethod("copy", "SELF_TYPE", nullptr));
+
+        OBJECT_CLASS = new Class("Object", objectFeatures, "");
+
+        //IO CLASS
+        std::vector<FeatureBase*> ioFeatures;
+
+        std::vector<Formal*> outStringArguments;
+        outStringArguments.emplace_back(new Formal("arg", "String"));
+        ioFeatures.emplace_back(new FeatureMethod("out_string", "SELF_TYPE", nullptr, outStringArguments));
+
+        std::vector<Formal*> outIntArguments;
+        outIntArguments.emplace_back(new Formal("arg", "Int"));
+        ioFeatures.emplace_back(new FeatureMethod("out_int", "SELF_TYPE", nullptr, outIntArguments));
+
+        ioFeatures.emplace_back(new FeatureMethod("in_string", "String", nullptr));
+        ioFeatures.emplace_back(new FeatureMethod("in_int", "Int", nullptr));
+
+        IO_CLASS = new Class("IO", ioFeatures, OBJECT_CLASS->getName());
+
+        //INT CLASS
+        std::vector<FeatureBase*> intFeatures;
+        intFeatures.emplace_back(new FeatureAttribute("val", "Int"));
+
+        INT_CLASS = new Class("Int", intFeatures, OBJECT_CLASS->getName());
+
+        //BOOL CLASS
+        std::vector<FeatureBase*> boolFeatures;
+        boolFeatures.emplace_back(new FeatureAttribute("val", "_prim_slot"));
+
+        BOOL_CLASS = new Class("Bool", boolFeatures, OBJECT_CLASS->getName());
+
+        //STRING CLASS
+        std::vector<FeatureBase*> stringFeatures;
+        stringFeatures.emplace_back(new FeatureAttribute("val", INT_CLASS->getName()));
+        stringFeatures.emplace_back(new FeatureAttribute("str_field", "_prim_slot"));
+        stringFeatures.emplace_back(new FeatureMethod("length", INT_CLASS->getName(), nullptr));
+
+        std::vector<Formal*> concatArguments;
+        concatArguments.emplace_back(new Formal("arg", "String"));
+        stringFeatures.emplace_back(new FeatureMethod("concat", "String", nullptr, concatArguments));
+
+        std::vector<Formal*> substrArguments;
+        substrArguments.emplace_back(new Formal("arg", INT_CLASS->getName()));
+        substrArguments.emplace_back(new Formal("arg2", INT_CLASS->getName()));
+        stringFeatures.emplace_back(new FeatureMethod("substr", "String", nullptr, substrArguments));
+
+        STRING_CLASS = new Class("String", stringFeatures, OBJECT_CLASS->getName());
     }
 
 } // CoolCompiler

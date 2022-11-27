@@ -50,4 +50,8 @@ namespace CoolCompiler {
 
         return result;
     }
+
+    llvm::Value *Case::visit(CoolCompiler::CodeGenerator *generator) {
+
+    }
 } // CoolCompiler

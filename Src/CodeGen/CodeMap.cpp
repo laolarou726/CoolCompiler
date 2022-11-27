@@ -294,4 +294,33 @@ namespace CoolCompiler {
         return llvm::ConstantPointerNull::get(toLLVMClass(type)->getPointerTo());
     }
 
+    Class *CodeMap::getCurrentClass() const {
+        return currentClass;
+    }
+
+    llvm::Function *CodeMap::getConstructor(const std::string &type) {
+        return constructors.at(getClass(type));
+    }
+
+    llvm::Function *CodeMap::getLLVMFunction(const std::string &className, const std::string &methodName) {
+        std::vector<FeatureBase*> features = getClass(className)->getFeatures();
+        FeatureMethod* method = nullptr;
+
+        for(auto* feature : features){
+            if(dynamic_cast<FeatureAttribute*>(feature) != nullptr)
+                continue;
+
+            auto* curMethod = (FeatureMethod*) feature;
+
+            if(method->getName() == methodName){
+                method = curMethod;
+                break;
+            }
+        }
+
+        if(method == nullptr) return nullptr;
+
+        return functions.at(method);
+    }
+
 } // CoolCompiler

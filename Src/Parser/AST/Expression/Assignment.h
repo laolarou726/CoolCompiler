@@ -21,6 +21,8 @@ namespace CoolCompiler {
         [[nodiscard]] Expression* getExpression() const;
 
         std::string typeCheck(SemanticAnalyzer* analyzer) override;
+        llvm::Value* getAssignmentLhsPtr(CoolCompiler::CodeGenerator *generator);
+        llvm::Value * visit(CoolCompiler::CodeGenerator *generator) override;
 
         void print(int depth) override{
             printTab(depth);

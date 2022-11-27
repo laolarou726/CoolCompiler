@@ -58,11 +58,15 @@ namespace CoolCompiler {
 
         llvm::Type* LLVM_BASIC_OR_CLASS_PTR_TYPE(const std::string& type_name);
         llvm::Function* getCurrentLLVMFunction();
+        llvm::Function* getLLVMFunction(const std::string& className,
+                                        const std::string& methodName);
         llvm::Value* getLLVMDefault(const std::string& type);
+        llvm::Function* getConstructor(const std::string &type);
         [[nodiscard]] llvm::ConstantInt* toLLVMInt32(int num) const;
         [[nodiscard]] llvm::Type* toBasicType(const std::string &class_) const;
         [[nodiscard]] llvm::StructType* toLLVMClass(const std::string& className);
         void setCurrentClass(Class* class_);
+        Class* getCurrentClass() const;
 
         static constexpr int GC_PTRS_COUNT_INDEX = 0;
         static constexpr int GC_PTRS_ARRAY_INDEX = 1;
@@ -81,11 +85,11 @@ namespace CoolCompiler {
         // need a pointer to constructor to handle "new SELF_TYPE"
         static constexpr int OBJ_CONSTRUCTOR_INDEX = 6;
         // need copy_constructor for copy method
-        static constexpr int OBJ_copy_CONSTRUCTOR_INDEX = 7;
-        static constexpr int OBJ_boxed_DATA_INDEX = 8;
+        static constexpr int OBJ_COPY_CONSTRUCTOR_INDEX = 7;
+        static constexpr int OBJ_BOXED_DATA_INDEX = 8;
 
         // attributes start after the things above
-        static constexpr int OBJ_attributes_OFFSET = 9;
+        static constexpr int OBJ_ATTRIBUTES_OFFSET = 9;
     };
 
 } // CoolCompiler

@@ -25,13 +25,11 @@ namespace CoolCompiler {
         std::map<std::string, std::string> inheritanceParents;
         SymbolTable<std::string, std::string>* objectsTable;
 
-        Class* OBJECT_CLASS;
-        Class* IO_CLASS;
-        Class* INT_CLASS;
-        Class* BOOL_CLASS;
-        Class* STRING_CLASS;
-
-        SemanticAnalyzer();
+        static Class* OBJECT_CLASS;
+        static Class* IO_CLASS;
+        static Class* INT_CLASS;
+        static Class* BOOL_CLASS;
+        static Class* STRING_CLASS;
 
         //CLASS CHECKS
         bool resolveDefinedClasses();
@@ -40,12 +38,16 @@ namespace CoolCompiler {
         bool isGraphAcyclic();
         bool isValid();
     public:
+        SemanticAnalyzer();
         explicit SemanticAnalyzer(Program* program);
+
+        static void initBaseTypes();
+
         void doCheck();
         [[nodiscard]] int getErrorCount() const;
         bool isTypeDefined(const std::string &type);
         void fail(const std::string &message, bool exit = false);
-        bool isPrimitive(const std::string &type);
+        static bool isPrimitive(const std::string &type);
         [[nodiscard]] SymbolTable<std::string, std::string>* getObjectsTable() const;
 
         std::string leastCommonAncestorType(const std::string &lhs, const std::string &rhs);
