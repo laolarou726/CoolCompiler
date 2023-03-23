@@ -67,6 +67,8 @@ namespace CoolCompiler {
             case EQ:
                 return eqCheck(analyzer);
         }
+
+        return nullptr;
     }
 
     llvm::Value *Comparison::getLLVMEq(SemanticAnalyzer* analyzer,
@@ -129,5 +131,7 @@ namespace CoolCompiler {
             case EQ:
                 return getLLVMEq(new SemanticAnalyzer(), generator, leftExprValue, rightExprValue);
         }
+
+        return nullptr;
     }
 } // CoolCompiler

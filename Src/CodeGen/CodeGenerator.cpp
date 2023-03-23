@@ -12,7 +12,7 @@
 #include "../../../Semantic/SemanticAnalyzer.h"
 
 namespace CoolCompiler {
-    CodeGenerator::CodeGenerator(Program *program) {
+    CodeGenerator::CodeGenerator(Program *program) : dataLayout(nullptr) {
         this->program = program;
     }
 
@@ -31,11 +31,13 @@ namespace CoolCompiler {
 
     void CodeGenerator::generate(bool gcVerbose) {
         // Initialize the target registry etc.
+        /*
         LLVMInitializeX86TargetInfo();
         LLVMInitializeX86Target();
         LLVMInitializeX86TargetMC();
         LLVMInitializeX86AsmParser();
         LLVMInitializeX86AsmPrinter();
+         */
     }
 
     llvm::LLVMContext *CodeGenerator::getContext() const {
@@ -103,7 +105,7 @@ namespace CoolCompiler {
                                             const std::string& currentType,
                                             const std::string& toType) {
         if (SemanticAnalyzer::isPrimitive(currentType) && toType == "Object") {
-            return CreateBoxedBasic(currentType, from);
+            return getBoxedBasic(currentType, from);
         }
 
         if (SemanticAnalyzer::isPrimitive(currentType) && toType != "Object" && toType != currentType) {
@@ -113,7 +115,7 @@ namespace CoolCompiler {
         }
 
         if (SemanticAnalyzer::isPrimitive(toType) && currentType == "Object") {
-            return UnboxValue(toType, from);
+            return unbox(toType, from);
         }
 
         if (currentType != toType) {
@@ -182,6 +184,44 @@ namespace CoolCompiler {
 
     SemanticAnalyzer *CodeGenerator::getAnalyzer() const {
         return analyzer;
+    }
+
+    llvm::Value *CodeGenerator::unbox(const std::string &type, llvm::Value* boxed) {
+        llvm::Value* boxedDataPtr = builder->CreateStructGEP(codeMap->toLLVMClass("Object"),
+                                                             boxed,
+                                                             CodeMap::OBJ_BOXED_DATA_INDEX);
+        llvm::Value* boxedDataI8Ptr = builder->CreateLoad(codeMap->toLLVMClass("Object"),boxedDataPtr);
+
+        if(type == "Int")
+            return builder->CreatePtrToInt(boxedDataI8Ptr, builder->getInt32Ty());
+        if(type == "Bool")
+            return builder->CreatePtrToInt(boxedDataI8Ptr, builder->getInt1Ty());
+
+        return boxedDataI8Ptr;
+    }
+
+    void CodeGenerator::generateExitIfVoid(llvm::Value *value, int lineNum, const std::string &exitMsg) {
+        llvm::Value* isVoidVal = builder->CreateICmpEQ(
+                builder->CreatePtrToInt(value, builder->getInt32Ty()),
+                llvm::ConstantInt::get(*context, llvm::APInt(32, 0, true)));
+
+        llvm::BasicBlock* isVoidBasicBlock =
+                llvm::BasicBlock::Create(*context, "is-void", codeMap->getCurrentLLVMFunction());
+        llvm::BasicBlock* notVoidBasicBlock =
+                llvm::BasicBlock::Create(*context, "not-void", codeMap->getCurrentLLVMFunction());
+
+        builder->CreateCondBr(isVoidVal, isVoidBasicBlock, notVoidBasicBlock);
+        builder->SetInsertPoint(isVoidBasicBlock);
+
+        generateExit(lineNum, exitMsg);
+
+        // will exit before taking this branch, but LLVM requires it
+        builder->CreateBr(notVoidBasicBlock);
+        builder->SetInsertPoint(notVoidBasicBlock);
+    }
+
+    void CodeGenerator::generateExit(int lineNum, const std::string &exitMsg) {
+
     }
 
 

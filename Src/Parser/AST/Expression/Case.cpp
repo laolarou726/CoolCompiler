@@ -52,6 +52,6 @@ namespace CoolCompiler {
     }
 
     llvm::Value *Case::visit(CoolCompiler::CodeGenerator *generator) {
-
+        return nullptr;
     }
 } // CoolCompiler

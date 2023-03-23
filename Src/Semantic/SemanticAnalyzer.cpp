@@ -8,6 +8,12 @@
 
 namespace CoolCompiler {
 
+    Class* SemanticAnalyzer::OBJECT_CLASS;
+    Class* SemanticAnalyzer::IO_CLASS;
+    Class* SemanticAnalyzer::INT_CLASS;
+    Class* SemanticAnalyzer::BOOL_CLASS;
+    Class* SemanticAnalyzer::STRING_CLASS;
+
     SemanticAnalyzer::SemanticAnalyzer() {
         initBaseTypes();
 

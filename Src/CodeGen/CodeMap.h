@@ -39,7 +39,6 @@ namespace CoolCompiler {
         llvm::FunctionType* getCopyConstructorFunctionType();
 
         [[nodiscard]] bool needVTable(const std::string &type) const;
-        [[nodiscard]] Class* getClass(const std::string &name) const;
 
         void addCopyConstructor(Class* class_);
         void addAttributes(Class* class_);
@@ -56,6 +55,7 @@ namespace CoolCompiler {
             return builder->getVoidTy();
         }
 
+        unsigned long getGcPtrsInfoIndex(Class* class_);
         llvm::Type* LLVM_BASIC_OR_CLASS_PTR_TYPE(const std::string& type_name);
         llvm::Function* getCurrentLLVMFunction();
         llvm::Function* getLLVMFunction(const std::string& className,
@@ -65,6 +65,7 @@ namespace CoolCompiler {
         [[nodiscard]] llvm::ConstantInt* toLLVMInt32(int num) const;
         [[nodiscard]] llvm::Type* toBasicType(const std::string &class_) const;
         [[nodiscard]] llvm::StructType* toLLVMClass(const std::string& className);
+        [[nodiscard]] Class* getClass(const std::string &name) const;
         void setCurrentClass(Class* class_);
         Class* getCurrentClass() const;
 

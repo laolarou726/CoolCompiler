@@ -13,4 +13,8 @@ namespace CoolCompiler {
     std::string Self::typeCheck(SemanticAnalyzer *analyzer) {
         return "SELF_TYPE";
     }
+
+    llvm::Value *Self::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler

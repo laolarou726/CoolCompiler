@@ -323,4 +323,25 @@ namespace CoolCompiler {
         return functions.at(method);
     }
 
+    unsigned long CodeMap::getGcPtrsInfoIndex(Class* class_) {
+        unsigned long superAttrCount = 0;
+        std::vector<Class*> superClasses = analyzer->getInheritList(class_);
+
+        for (auto* super : superClasses) {
+            int count = 0;
+
+            for(FeatureBase* feature : super->getFeatures()){
+                if(dynamic_cast<FeatureMethod*>(feature) != nullptr) continue;
+
+                count++;
+            }
+
+            superAttrCount += count;
+        }
+
+        auto gcPtrInfoOffset = superClasses.size();
+
+        return superAttrCount + gcPtrInfoOffset + CodeMap::OBJ_ATTRIBUTES_OFFSET;
+    }
+
 } // CoolCompiler

@@ -97,16 +97,54 @@ namespace CoolCompiler {
                 if(dynamic_cast<FeatureMethod*>(feature) != nullptr)
                     continue;
 
-                auto* attr = (FeatureAttribute*) feature;
+                auto* inAttr = (FeatureAttribute*) feature;
 
                 llvm::Value* cur_class_val = codeMap->getCurrentLLVMFunction()->args().begin();
                 cur_class_val = generator->covertValue(cur_class_val, codeMap->getCurrentClass()->getName(),
                                             inheritClass->getName());
 
-                if (attr->getName() == id->getName()) {
+                if (inAttr->getName() == id->getName()) {
+                    std::vector<FeatureAttribute*> sortedAttrs;
+                    for(auto* inFeature : inheritClass->getFeatures()){
+                        if(dynamic_cast<FeatureMethod*>(inFeature) != nullptr)
+                            continue;
+
+                        auto* attr = (FeatureAttribute*) inFeature;
+
+                        if (!analyzer->isPrimitive(attr->getType()))
+                            sortedAttrs.emplace_back(attr);
+                    }
+
+                    for(auto* inFeature : inheritClass->getFeatures()){
+                        if(dynamic_cast<FeatureMethod*>(inFeature) != nullptr)
+                            continue;
+
+                        auto* attr = (FeatureAttribute*) inFeature;
+
+                        if (attr->getType() == "String")
+                            sortedAttrs.emplace_back(attr);
+                    }
+
+                    for(auto* inFeature : inheritClass->getFeatures()){
+                        if(dynamic_cast<FeatureMethod*>(inFeature) != nullptr)
+                            continue;
+
+                        auto* attr = (FeatureAttribute*) inFeature;
+
+                        if (attr->getType() != "String" && CoolCompiler::SemanticAnalyzer::isPrimitive(attr->getType())) {
+                            sortedAttrs.emplace_back(attr);
+                        }
+                    }
+
+                    auto attributeIndex = std::distance(sortedAttrs.begin(),
+                                                        std::find(sortedAttrs.begin(),
+                                                                  sortedAttrs.end(),
+                                                                  inAttr));
+
+
                     return builder->CreateStructGEP(codeMap->toLLVMClass(inheritClass->getName()),
                                                     cur_class_val,
-                                                    StructAttrIndex(inheritClass, attr));
+                                                    codeMap->getGcPtrsInfoIndex(inheritClass) + attributeIndex + 1);
                 }
             }
         }

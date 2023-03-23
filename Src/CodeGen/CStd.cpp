@@ -3,6 +3,7 @@
 //
 
 #include "CStd.h"
+#include "CodeMap.h"
 
 namespace CoolCompiler {
     llvm::FunctionCallee CStd::createCStdFuncDecl(const std::string &func_name, const std::string &return_type_str,

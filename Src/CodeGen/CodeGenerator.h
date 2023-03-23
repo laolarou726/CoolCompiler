@@ -24,6 +24,7 @@ namespace CoolCompiler {
         Program* program = nullptr;
         SemanticAnalyzer* analyzer = nullptr;
         Bitness getBitness();
+        llvm::Value* unbox(const std::string &type, llvm::Value* boxed);
     public:
         explicit CodeGenerator(Program* program);
         void generate(bool gcVerbose);
@@ -38,6 +39,10 @@ namespace CoolCompiler {
         llvm::Value* covertValue(llvm::Value* from,
                                  const std::string& currentType,
                                  const std::string& toType);
+
+        void generateExitIfVoid(llvm::Value* value, int lineNum, const std::string& exitMsg);
+        void generateExit(int lineNum, const std::string& exitMsg);
+
         [[nodiscard]] SemanticAnalyzer* getAnalyzer() const;
         [[nodiscard]] llvm::LLVMContext* getContext() const;
         [[nodiscard]] llvm::Module* getModule() const;

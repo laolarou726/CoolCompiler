@@ -6,9 +6,10 @@
 #define COOLCOMPILER_CSTD_H
 
 #include <llvm/IR/Constants.h>
-#include "CodeMap.h"
 
 namespace CoolCompiler {
+
+    class CodeMap;
 
     class CStd {
     private:

@@ -33,4 +33,8 @@ namespace CoolCompiler {
 
         return *result;
     }
+
+    llvm::Value *Id::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler

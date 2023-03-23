@@ -19,6 +19,7 @@ namespace CoolCompiler {
         [[nodiscard]] std::string getName() const;
 
         std::string typeCheck(SemanticAnalyzer* analyzer) override;
+        llvm::Value * visit(CoolCompiler::CodeGenerator *generator) override;
 
         void print(int depth) override{
             printTab(depth);

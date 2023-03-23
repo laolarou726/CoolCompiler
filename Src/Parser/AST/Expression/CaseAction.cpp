@@ -39,4 +39,8 @@ namespace CoolCompiler {
 
         return caseActionExprType;
     }
+
+    llvm::Value *CaseAction::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler

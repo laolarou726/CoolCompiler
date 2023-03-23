@@ -51,4 +51,8 @@ namespace CoolCompiler {
 
         return initType == "_no_type" ? type : initType;
     }
+
+    llvm::Value *InnerLet::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler

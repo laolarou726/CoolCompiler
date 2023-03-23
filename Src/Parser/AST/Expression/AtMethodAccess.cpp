@@ -99,4 +99,8 @@ namespace CoolCompiler {
 
         return returnType == "SELF_TYPE" ? exprType : returnType;
     }
+
+    llvm::Value *AtMethodAccess::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler

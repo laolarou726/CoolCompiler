@@ -37,6 +37,6 @@ namespace CoolCompiler {
     }
 
     llvm::Value *Let::visit(CoolCompiler::CodeGenerator *generator) {
-
+        return nullptr;
     }
 } // CoolCompiler

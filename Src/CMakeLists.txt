@@ -54,7 +54,7 @@ add_library(CoolCompiler
         ${LEXER_SOURCES}
         ${PARSER_SOURCES}
         ${SEMANTIC_SOURCES}
-        ${CODEGEN_SOURCES})
+        ${CODEGEN_SOURCES} CodeGen/BuiltinCodeGenerator.cpp CodeGen/BuiltinCodeGenerator.h)
 
 # Find the libraries that correspond to the LLVM components
 # that we wish to use

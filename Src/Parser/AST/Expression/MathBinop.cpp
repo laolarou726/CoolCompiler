@@ -52,6 +52,8 @@ namespace CoolCompiler {
             case SLASH:
                 return intOpCheck(analyzer, "/");
         }
+
+        return nullptr;
     }
 
     llvm::Value *MathBinop::visit(CoolCompiler::CodeGenerator *generator) {
@@ -69,5 +71,7 @@ namespace CoolCompiler {
             case SLASH:
                 return builder->CreateSDiv(leftExprValue, rightExprValue);
         }
+
+        return nullptr;
     }
 } // CoolCompiler

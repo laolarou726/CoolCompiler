@@ -66,4 +66,8 @@ namespace CoolCompiler {
 
         return returnType == "SELF_TYPE" ? analyzer->getCurrentClassName() : returnType;
     }
+
+    llvm::Value *SelfMethodAccess::visit(CoolCompiler::CodeGenerator *generator) {
+        return nullptr;
+    }
 } // CoolCompiler
